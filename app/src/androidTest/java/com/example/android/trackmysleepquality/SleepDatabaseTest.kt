@@ -62,10 +62,10 @@ class SleepDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun insertAndGetNight() {
-        val night = Mondat(0,0,-1,4,"df",5,"dfg","bsbdfs",6)
+        val night = Mondat(0,-1,4,"df",5,"dfg","bsbdfs",6)
         sleepDao.insert(night)
         val tonight = sleepDao.getTonight()
-        assertEquals(tonight?.sleepQuality, -1)
+        assertEquals(tonight?.mondatindex, 4)
     }
 }
 

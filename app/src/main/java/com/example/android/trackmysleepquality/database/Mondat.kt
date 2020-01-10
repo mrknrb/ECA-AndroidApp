@@ -26,10 +26,8 @@ data class Mondat(
         var mondatid: Long = 0L,
 
         @ColumnInfo(name = "start_time_milli")
-        val letrehozasdatuma: Long = System.currentTimeMillis(),
+        val letrehozasdatuma: Long,
 
-        @ColumnInfo(name = "quality_rating")
-        var sleepQuality: Int = -1,
 
         @ColumnInfo(name = "mondatindex")
         val mondatindex: Int?,
