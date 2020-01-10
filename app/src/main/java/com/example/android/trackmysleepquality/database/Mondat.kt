@@ -20,28 +20,22 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "daily_sleep_quality_table")
+@Entity(tableName = "mondatoktabla")
 data class Mondat(
         @PrimaryKey(autoGenerate = true)
         var mondatid: Long = 0L,
-
-        @ColumnInfo(name = "start_time_milli")
+        @ColumnInfo(name = "letrehozasdatuma")
         val letrehozasdatuma: Long,
-
-
         @ColumnInfo(name = "mondatindex")
         val mondatindex: Int?,
-
         @ColumnInfo(name = "mondat")
         var mondat: String?,
-
         @ColumnInfo(name = "fejezetindex")
         var fejezetindex: Int?,
-
         @ColumnInfo(name = "fejezetcim")
         var fejezetcim: String?,
         @ColumnInfo(name = "filename")
         var filename: String?,
         @ColumnInfo(name = "utolsomodositas")
-        var utolsomodositas: Int?
+        var utolsomodositas: Long
 )

@@ -20,7 +20,7 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.android.trackmysleepquality.database.Mondat
-import com.example.android.trackmysleepquality.database.SleepDatabase
+import com.example.android.trackmysleepquality.database.MondatDatabase
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import org.junit.Assert.assertEquals
 import org.junit.After
@@ -39,14 +39,14 @@ import java.io.IOException
 class SleepDatabaseTest {
 
     private lateinit var sleepDao: SleepDatabaseDao
-    private lateinit var db: SleepDatabase
+    private lateinit var db: MondatDatabase
 
     @Before
     fun createDb() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         // Using an in-memory database because the information stored here disappears when the
         // process is killed.
-        db = Room.inMemoryDatabaseBuilder(context, SleepDatabase::class.java)
+        db = Room.inMemoryDatabaseBuilder(context, MondatDatabase::class.java)
                 // Allowing main thread queries, just for testing.
                 .allowMainThreadQueries()
                 .build()
@@ -66,6 +66,7 @@ class SleepDatabaseTest {
         sleepDao.insert(night)
         val tonight = sleepDao.getTonight()
         assertEquals(tonight?.mondatindex, 4)
+        
     }
 }
 

@@ -24,21 +24,17 @@ import androidx.room.Update
 
 @Dao
 interface SleepDatabaseDao {
-
     @Insert
     fun insert(mondat: Mondat)
     @Update
     fun update(mondat: Mondat)
-    /*
     @Query("SELECT * FROM mondatoktabla ORDER BY mondatindex DESC")
     fun getAllMondat(): LiveData<List<Mondat>>
     @Query("DELETE FROM mondatoktabla")
     fun clear()
     @Query("SELECT * FROM mondatoktabla ORDER BY mondatindex DESC LIMIT 1")
     fun utolsomondat(): Mondat?
-    */
-    @Query("SELECT * FROM daily_sleep_quality_table ORDER BY mondatid DESC LIMIT 1")
+    @Query("SELECT * FROM mondatoktabla ORDER BY mondatid DESC LIMIT 1")
     fun getTonight(): Mondat?
-
 }
 

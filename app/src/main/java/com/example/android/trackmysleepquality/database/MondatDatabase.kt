@@ -29,7 +29,7 @@ import androidx.room.RoomDatabase
  * so you can reuse it.
  */
 @Database(entities = [Mondat::class], version = 1, exportSchema = false)
-abstract class SleepDatabase : RoomDatabase() {
+abstract class MondatDatabase : RoomDatabase() {
 
     /**
      * Connects the database to the DAO.
@@ -53,7 +53,7 @@ abstract class SleepDatabase : RoomDatabase() {
          *  thread to shared data are visible to other threads.
          */
         @Volatile
-        private var INSTANCE: SleepDatabase? = null
+        private var INSTANCE: MondatDatabase? = null
 
         /**
          * Helper function to get the database.
@@ -72,7 +72,7 @@ abstract class SleepDatabase : RoomDatabase() {
          *
          * @param context The application context Singleton, used to get access to the filesystem.
          */
-        fun getInstance(context: Context): SleepDatabase {
+        fun getInstance(context: Context): MondatDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -84,7 +84,7 @@ abstract class SleepDatabase : RoomDatabase() {
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                             context.applicationContext,
-                            SleepDatabase::class.java,
+                            MondatDatabase::class.java,
                             "sleep_history_database"
                     )
                             // Wipes and rebuilds instead of migrating if no Migration object.
