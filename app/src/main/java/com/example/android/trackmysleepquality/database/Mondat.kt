@@ -21,16 +21,29 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "daily_sleep_quality_table")
-data class SleepNight(
+data class Mondat(
         @PrimaryKey(autoGenerate = true)
-        var nightId: Long = 0L,
+        var mondatid: Long = 0L,
 
         @ColumnInfo(name = "start_time_milli")
-        val startTimeMilli: Long = System.currentTimeMillis(),
-
-        @ColumnInfo(name = "end_time_milli")
-        var endTimeMilli: Long = startTimeMilli,
+        val letrehozasdatuma: Long = System.currentTimeMillis(),
 
         @ColumnInfo(name = "quality_rating")
-        var sleepQuality: Int = -1
+        var sleepQuality: Int = -1,
+
+        @ColumnInfo(name = "mondatindex")
+        val mondatindex: Int?,
+
+        @ColumnInfo(name = "mondat")
+        var mondat: String?,
+
+        @ColumnInfo(name = "fejezetindex")
+        var fejezetindex: Int?,
+
+        @ColumnInfo(name = "fejezetcim")
+        var fejezetcim: String?,
+        @ColumnInfo(name = "filename")
+        var filename: String?,
+        @ColumnInfo(name = "utolsomodositas")
+        var utolsomodositas: Int?
 )

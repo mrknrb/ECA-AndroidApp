@@ -19,9 +19,9 @@ package com.example.android.trackmysleepquality
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.android.trackmysleepquality.database.Mondat
 import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
-import com.example.android.trackmysleepquality.database.SleepNight
 import org.junit.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
@@ -62,7 +62,7 @@ class SleepDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun insertAndGetNight() {
-        val night = SleepNight()
+        val night = Mondat(0,0,-1,4,"df",5,"dfg","bsbdfs",6)
         sleepDao.insert(night)
         val tonight = sleepDao.getTonight()
         assertEquals(tonight?.sleepQuality, -1)
