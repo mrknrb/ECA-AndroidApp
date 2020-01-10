@@ -34,7 +34,7 @@ abstract class MondatDatabase : RoomDatabase() {
     /**
      * Connects the database to the DAO.
      */
-    abstract val sleepDatabaseDao: SleepDatabaseDao
+    abstract val sleepDatabaseDao: MondatDatabaseDao
 
     /**
      * Define a companion object, this allows us to add functions on the SleepDatabase class.
@@ -85,7 +85,7 @@ abstract class MondatDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                             context.applicationContext,
                             MondatDatabase::class.java,
-                            "sleep_history_database"
+                            "mondatadatbazis"
                     )
                             // Wipes and rebuilds instead of migrating if no Migration object.
                             // Migration is not part of this lesson. You can learn more about

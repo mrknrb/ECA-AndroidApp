@@ -23,7 +23,7 @@ import androidx.room.Query
 import androidx.room.Update
 
 @Dao
-interface SleepDatabaseDao {
+interface MondatDatabaseDao {
     @Insert
     fun insert(mondat: Mondat)
     @Update

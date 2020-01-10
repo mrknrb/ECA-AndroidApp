@@ -21,7 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.android.trackmysleepquality.database.Mondat
 import com.example.android.trackmysleepquality.database.MondatDatabase
-import com.example.android.trackmysleepquality.database.SleepDatabaseDao
+import com.example.android.trackmysleepquality.database.MondatDatabaseDao
 import org.junit.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
@@ -38,7 +38,7 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 class SleepDatabaseTest {
 
-    private lateinit var sleepDao: SleepDatabaseDao
+    private lateinit var sleepDao: MondatDatabaseDao
     private lateinit var db: MondatDatabase
 
     @Before
