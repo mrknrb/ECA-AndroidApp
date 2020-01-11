@@ -34,6 +34,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.example.android.trackmysleepquality.database.Mondat
 import com.example.android.trackmysleepquality.database.MondatDatabase
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.app.ComponentActivity
@@ -48,6 +49,13 @@ class ttsprogram : AppCompatActivity() {
     private var mTTS: TextToSpeech? = null
     var menu2: Menu? = null
     var ttstext: EditText? = null
+    fun ttsopen2() {
+        val intent = Intent(this, ttsbetoltes::class.java)
+        // val editText = findViewById(R.id.editText) as EditText
+        //  val message = editText.text.toString()
+        //  intent.putExtra(EXTRA_MESSAGE, message)
+        startActivity(intent)
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
         val inflater: MenuInflater = menuInflater
@@ -97,7 +105,7 @@ class ttsprogram : AppCompatActivity() {
             }
             R.id.load -> {
                 Toast.makeText(this, "load", Toast.LENGTH_LONG).show()
-
+                ttsopen2()
                 true
             }
             R.id.save -> {
