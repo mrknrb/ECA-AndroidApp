@@ -36,5 +36,9 @@ interface MondatDatabaseDao {
     fun utolsomondat(): Mondat?
     @Query("SELECT * FROM mondatoktabla ORDER BY mondatid DESC LIMIT 1")
     fun getTonight(): Mondat?
+    @Query("SELECT * FROM mondatoktabla WHERE filename LIKE :filename ORDER BY mondatid DESC LIMIT 1")
+    fun fajlnevfoglalt(filename:String): Mondat?
+    @Query("DELETE FROM mondatoktabla WHERE filename LIKE :filename ")
+    fun deletefile(filename:String)
 }
 

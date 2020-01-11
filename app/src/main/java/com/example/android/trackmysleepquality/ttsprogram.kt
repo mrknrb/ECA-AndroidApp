@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import kotlinx.android.synthetic.main.activity_ttsprogram.*
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.PendingIntent.getActivity
 import android.content.Context
 import androidx.core.content.ContextCompat.getSystemService
@@ -28,12 +29,19 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.AsyncTask
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.example.android.trackmysleepquality.database.Mondat
 import com.example.android.trackmysleepquality.database.MondatDatabase
+import android.content.DialogInterface
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class ttsprogram : AppCompatActivity() {
@@ -93,56 +101,82 @@ class ttsprogram : AppCompatActivity() {
             }
             R.id.save -> {
                 Toast.makeText(this, "save", Toast.LENGTH_LONG).show()
-                menu2?.findItem(R.id.save)?.isVisible = false
-                menu2?.findItem(R.id.edit)?.isVisible = true
-
-                disableEditText(ttstext)
-                disableEditText(ttstitle)
-
-                var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
-                ttstext = findViewById(R.id.ttstext)
-                ttstitle = findViewById(R.id.ttstitle)
                 var teljesszoveg = ttstext?.text.toString()
                 var cim = ttstitle?.text.toString()
+                val builder = AlertDialog.Builder(this)
+                builder.setCancelable(true)
+                var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
+                fun mentes(){
+                  var  time:Long= System.currentTimeMillis()
 
-                //System.out.println("mrk2"+teljesszoveg+cim)
-                val mondatokarray = teljesszoveg.split("#")
-                // System.out.println("mrk2"+mondatokarray[0])
-                mondatadatbazis.sleepDatabaseDao.clear()
-                mondatokarray.forEachIndexed { j, k ->
+                    menu2?.findItem(R.id.save)?.isVisible = false
+                    menu2?.findItem(R.id.edit)?.isVisible = true
 
+                    disableEditText(ttstext)
+                    disableEditText(ttstitle)
 
-                    val fejezet =   k.substringBefore(System.getProperty("line.separator"),"ures")
-                    val mondatokstring =   k.substringAfter(System.getProperty("line.separator"),"ures")
-                //    System.out.println("mrk1"+k)
-         // System.out.println("mrk1"+fejezet)
-       // System.out.println("mrk1"+mondatokstring)
-
-
-                   var mondatokarray2 = mondatokstring.split(".")
+                    ttstext = findViewById(R.id.ttstext)
+                    ttstitle = findViewById(R.id.ttstitle)
 
 
-                   mondatokarray2.forEachIndexed { i, s ->
-                       var mondat = Mondat(0, 0, i, s + ".", j, fejezet, cim, 0)
+                    //System.out.println("mrk2"+teljesszoveg+cim)
+                    val mondatokarray = teljesszoveg.split("#")
+                    // System.out.println("mrk2"+mondatokarray[0])
+                    mondatadatbazis.sleepDatabaseDao.clear()
+                    mondatokarray.forEachIndexed { j, k ->
 
-                       mondatadatbazis.sleepDatabaseDao.insert(mondat)
-                   }
 
+                        val fejezet = k.substringBefore(System.getProperty("line.separator"), "ures")
+                        val mondatokstring = k.substringAfter(System.getProperty("line.separator"), "ures")
+                        var mondatokarray2 = mondatokstring.split(".")
+                        mondatokarray2.forEachIndexed { i, s ->
+                            var mondat = Mondat(0, time, i, s + ".", j, fejezet, cim, 0)
+                            mondatadatbazis.sleepDatabaseDao.insert(mondat)
+                        }
+                    }
+                    Toast.makeText(this, "mukodik", Toast.LENGTH_LONG).show()
+                    var mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondat()
+                    mondatok.forEach {
+                        var fej = mondatadatbazis.sleepDatabaseDao.fajlnevfoglalt(cim)?.filename
+                        //Toast.makeText(this,fej,Toast.LENGTH_LONG).show()
+                        System.out.println("mrk" + fej)
+                    }
                 }
+                if (teljesszoveg == "") {
+                    builder.setMessage("The text field is empty!")
+                    builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                    builder.show()
+                } else if (teljesszoveg.length < 30) {
+                    builder.setMessage("The text is too short!")
+                    builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                    builder.show()
+                } else if (cim == "") {
+                    builder.setMessage("Please give a title!")
+                    builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                    builder.show()
+                } else if (mondatadatbazis.sleepDatabaseDao.fajlnevfoglalt(cim)?.filename ==cim ) {
+                    fun kerdes() {
+                        builder.setTitle("")
+                        builder.setMessage("Are you sure? Your old file will be deleted!")
+                        builder.setNegativeButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                        builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialogInterface, i ->
 
+                            mondatadatbazis.sleepDatabaseDao.deletefile(cim)
+                           mentes()
+                        })
+                        builder.show()
+                    }
+                    builder.setTitle("The title is taken!")
+                    builder.setMessage("Would you like to override it?")
+                    builder.setNegativeButton("No", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                    builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialogInterface, i ->
+                        kerdes()
+                    })
+                    builder.show()
 
-
-                Toast.makeText(this, "mukodik", Toast.LENGTH_LONG).show()
-                var mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondat()
-
-                mondatok.forEach {
-                    var fej = it.mondat
-                    //Toast.makeText(this,fej,Toast.LENGTH_LONG).show()
-                    System.out.println("mrk" + fej)
+                } else{
+                    mentes()
                 }
-
-
-
 
                 true
             }
