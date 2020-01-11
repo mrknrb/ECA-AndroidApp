@@ -1,5 +1,8 @@
 package com.example.android.trackmysleepquality
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -11,6 +14,7 @@ import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.view.ContextMenu
+import android.view.MenuItem
 import android.view.View
 
 
@@ -32,13 +36,12 @@ class ttsbetoltes : AppCompatActivity() {
         }
     }
     */
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ttsbetoltes)
 
         val friendsListView = findViewById<ListView>(R.id.listview)
-        registerForContextMenu(friendsListView);
+
         val myFriends = ArrayList(asList("Mark", "Jane", "Sussy", "Jan"))
 
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, myFriends)
@@ -57,8 +60,16 @@ class ttsbetoltes : AppCompatActivity() {
         friendsListView.setOnItemLongClickListener (object : AdapterView.OnItemLongClickListener {
             override fun onItemLongClick(adapterView: AdapterView<*>, view: View, i: Int, l: Long): Boolean {
 
+                val builder = AlertDialog.Builder(this@ttsbetoltes)
+                builder.setCancelable(true)
+                builder.setMessage("Do you want to delete this?")
+                builder.setNegativeButton("No", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialogInterface, i ->
 
 
+
+                })
+                builder.show()
 
                 Toast.makeText(applicationContext, "Csá " + myFriends[i], Toast.LENGTH_LONG).show()
 return true
