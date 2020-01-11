@@ -97,6 +97,7 @@ class ttsprogram : AppCompatActivity() {
             }
             R.id.load -> {
                 Toast.makeText(this, "load", Toast.LENGTH_LONG).show()
+
                 true
             }
             R.id.save -> {
@@ -108,24 +109,17 @@ class ttsprogram : AppCompatActivity() {
                 var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
                 fun mentes(){
                   var  time:Long= System.currentTimeMillis()
-
                     menu2?.findItem(R.id.save)?.isVisible = false
                     menu2?.findItem(R.id.edit)?.isVisible = true
-
                     disableEditText(ttstext)
                     disableEditText(ttstitle)
-
                     ttstext = findViewById(R.id.ttstext)
                     ttstitle = findViewById(R.id.ttstitle)
-
-
                     //System.out.println("mrk2"+teljesszoveg+cim)
                     val mondatokarray = teljesszoveg.split("#")
                     // System.out.println("mrk2"+mondatokarray[0])
                     mondatadatbazis.sleepDatabaseDao.clear()
                     mondatokarray.forEachIndexed { j, k ->
-
-
                         val fejezet = k.substringBefore(System.getProperty("line.separator"), "ures")
                         val mondatokstring = k.substringAfter(System.getProperty("line.separator"), "ures")
                         var mondatokarray2 = mondatokstring.split(".")
@@ -157,10 +151,9 @@ class ttsprogram : AppCompatActivity() {
                 } else if (mondatadatbazis.sleepDatabaseDao.fajlnevfoglalt(cim)?.filename ==cim ) {
                     fun kerdes() {
                         builder.setTitle("")
-                        builder.setMessage("Are you sure? Your old file will be deleted!")
+                        builder.setMessage("Are you sure? Your old file and state will be deleted!")
                         builder.setNegativeButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
                         builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialogInterface, i ->
-
                             mondatadatbazis.sleepDatabaseDao.deletefile(cim)
                            mentes()
                         })
@@ -173,11 +166,9 @@ class ttsprogram : AppCompatActivity() {
                         kerdes()
                     })
                     builder.show()
-
                 } else{
                     mentes()
                 }
-
                 true
             }
             else -> super.onOptionsItemSelected(item)
