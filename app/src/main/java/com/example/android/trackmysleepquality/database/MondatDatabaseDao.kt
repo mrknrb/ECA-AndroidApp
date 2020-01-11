@@ -29,7 +29,7 @@ interface MondatDatabaseDao {
     @Update
     fun update(mondat: Mondat)
     @Query("SELECT * FROM mondatoktabla ORDER BY mondatindex DESC")
-    fun getAllMondat(): LiveData<List<Mondat>>
+    fun getAllMondat(): List<Mondat>
     @Query("DELETE FROM mondatoktabla")
     fun clear()
     @Query("SELECT * FROM mondatoktabla ORDER BY mondatindex DESC LIMIT 1")
