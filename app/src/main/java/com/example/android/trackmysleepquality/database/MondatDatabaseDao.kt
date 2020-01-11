@@ -40,5 +40,7 @@ interface MondatDatabaseDao {
     fun fajlnevfoglalt(filename:String): Mondat?
     @Query("DELETE FROM mondatoktabla WHERE filename LIKE :filename ")
     fun deletefile(filename:String)
+    @Query("SELECT filename FROM mondatoktabla GROUP BY filename")
+    fun getAllFile(): List<String>
 }
 

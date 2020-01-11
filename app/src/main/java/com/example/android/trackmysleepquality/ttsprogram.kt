@@ -41,8 +41,7 @@ import androidx.core.app.ComponentActivity
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import android.provider.AlarmClock.EXTRA_MESSAGE
 
 
 class ttsprogram : AppCompatActivity() {
@@ -126,7 +125,6 @@ class ttsprogram : AppCompatActivity() {
                     //System.out.println("mrk2"+teljesszoveg+cim)
                     val mondatokarray = teljesszoveg.split("#")
                     // System.out.println("mrk2"+mondatokarray[0])
-                    mondatadatbazis.sleepDatabaseDao.clear()
                     mondatokarray.forEachIndexed { j, k ->
                         val fejezet = k.substringBefore(System.getProperty("line.separator"), "ures")
                         val mondatokstring = k.substringAfter(System.getProperty("line.separator"), "ures")
@@ -195,6 +193,22 @@ class ttsprogram : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ttsprogram)
+        val message = intent.getStringExtra(EXTRA_MESSAGE)
+
+
+if(message==null){
+
+}else{
+    Toast.makeText(applicationContext,  message+" loaded", Toast.LENGTH_LONG).show()
+    ttstext = findViewById(R.id.ttstext)
+    disableEditText(ttstext)
+    disableEditText(ttstitle)
+
+
+}
+
+
+
 
         var mSeekBarSpeed: SeekBar = findViewById(R.id.speedseekbar)
         var mSeekBarVolume: SeekBar = findViewById(R.id.volumeseekbar)
