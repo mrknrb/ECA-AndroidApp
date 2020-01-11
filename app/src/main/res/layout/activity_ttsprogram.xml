@@ -12,12 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="1dp"
         android:ems="10"
         android:hint="Give a title"
         android:inputType="textPersonName"
         android:text="gg"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -30,8 +33,9 @@
         android:gravity="start|top"
         android:hint="Enter text [1. This means a chapter]"
         android:inputType="textMultiLine"
+        android:scrollbarSize="10dp"
         android:text="#1. World War II\n(often abbreviated to WWII or WW2), abc lso known as the Second World War, was a global war that lasted from 1939 to 1945. The vast majority of the world's countries—including all the great\n powers—eventually formed two opposing military alliances:          the Allies and the Axis. A state of total war emerged, directly involving more than 100 million people from more than 30 countries.The major participants threw their entire economic, industrial, and scientific capabilities behind the war effort, blurring the distinction between civilianand military resources. World War II was the deadliest conflict in human history, marked by 70 to 85 million fatalities, most of whom were civilians in the SovietUnion and China. It included massacres, the genocide of the Holocaust, strategic bombing, premeditated death from starvation and disease, and the only use ofnuclear weapons in war.#Usa states \n abcAlabama.  Alaska.  Arizona  Arkansas  California  Colorado.  Connecticut  Delaware  Florida  Georgia  HawaiiIdaho  Illinois  Indiana  Iowa  Kansas  Kentucky  Louisiana  Maine  Maryland.  Massachusetts  Michigan  Minnesota  Mississippi . Missouri  MontanaNebraska  Nevada  New Hampshire  New Jersey  New Mexico. \nNew York  North Carolina  North. Dakota  Ohio  Oklahoma  Oregon  Pennsylvania.  RhodeIsland  South Carolina  South. Dakota  Tennessee  Texas  Utah.  Vermont  Virginia  Washington  West Virginia.  Wisconsin  Wyoming#3. Remindersabc \ndghmdhm. stjsfgjstjsftj.jstjstjsts.\njtsjstjstjsjgfjsfgj.s.gfj.\nsfgjsfg.jsfgjs.fgjfsg.jsfgj.sgfjsfg.jsfgjfsgjsgf.jsfgjfsg.j "
-        android:textSize="13sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/ttstitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -161,6 +165,99 @@
                 android:layout_height="30dp"
                 android:layout_weight="1" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="1dp"
+        android:gravity="start|left"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text=" Part: "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The II. World War" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Sentence"
+                android:textSize="18sp" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
