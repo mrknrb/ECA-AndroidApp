@@ -11,7 +11,6 @@ import android.widget.ListView
 import android.widget.Toast
 import android.widget.AdapterView
 import java.util.Arrays.asList
-import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.provider.AlarmClock.EXTRA_MESSAGE
@@ -19,6 +18,14 @@ import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import com.example.android.trackmysleepquality.database.MondatDatabase
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
+
+
 
 
 class ttsbetoltes : AppCompatActivity() {
@@ -39,6 +46,8 @@ class ttsbetoltes : AppCompatActivity() {
         }
     }
     */
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ttsbetoltes)
@@ -56,8 +65,11 @@ class ttsbetoltes : AppCompatActivity() {
 
                 val intent = Intent(this@ttsbetoltes, ttsprogram::class.java)
                intent.putExtra(EXTRA_MESSAGE, myFriends[i])
-                startActivity(intent)
 
+                //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                //intent.setClassName(this@ttsbetoltes,"com.example");
+
+                startActivity(intent);
 
 
                // Toast.makeText(applicationContext,  myFriends[i]+"Opened", Toast.LENGTH_LONG).show()

@@ -22,7 +22,7 @@
         <activity
             android:name=".ttsprogram"
             android:label="1. TTS Method"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"/>
 
         <activity
             android:name=".ttsbetoltes"

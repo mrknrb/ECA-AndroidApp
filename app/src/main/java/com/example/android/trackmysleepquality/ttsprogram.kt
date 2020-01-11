@@ -48,6 +48,34 @@ class ttsprogram : AppCompatActivity() {
     private var mTTS: TextToSpeech? = null
     var menu2: Menu? = null
     var ttstext: EditText? = null
+   var editlathato=false
+
+
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putString("Cim", findViewById<EditText>(R.id.ttstitle).text.toString())
+        savedInstanceState.putString("Szoveg", findViewById<EditText>(R.id.ttstext).text.toString())
+        savedInstanceState.putInt("Pitch", findViewById<SeekBar>(R.id.pitchseekbar).progress)
+        savedInstanceState.putInt("Speed", findViewById<SeekBar>(R.id.speedseekbar).progress)
+        savedInstanceState.putInt("Volume", findViewById<SeekBar>(R.id.volumeseekbar).progress)
+        Toast.makeText(this, findViewById<EditText>(R.id.ttstitle).text.toString(), Toast.LENGTH_LONG).show()
+        savedInstanceState.putString("MyString", "Welcome back to Android")
+        // etc.
+    }
+    public override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        findViewById<EditText>(R.id.ttstitle).setText(savedInstanceState.getString("Cim"))
+        findViewById<EditText>(R.id.ttstext).setText(savedInstanceState.getString("Szoveg"))
+        findViewById<SeekBar>(R.id.pitchseekbar).progress=savedInstanceState.getInt("Pitch")
+        findViewById<SeekBar>(R.id.speedseekbar).progress=savedInstanceState.getInt("Speed")
+        findViewById<SeekBar>(R.id.volumeseekbar).progress=savedInstanceState.getInt("Volume")
+        Toast.makeText(this, savedInstanceState.getString("Cim"), Toast.LENGTH_LONG).show()
+    }
     fun ttsopen2() {
         val intent = Intent(this, ttsbetoltes::class.java)
         // val editText = findViewById(R.id.editText) as EditText
@@ -60,6 +88,14 @@ class ttsprogram : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.ttsmenu, menu)
         menu2 = menu
+
+if(editlathato==true) {
+    menu2?.findItem(R.id.save)?.isVisible = false
+    menu2?.findItem(R.id.edit)?.isVisible = true
+}
+
+
+
         return true
     }
 
@@ -195,6 +231,21 @@ class ttsprogram : AppCompatActivity() {
         setContentView(R.layout.activity_ttsprogram)
         val message = intent.getStringExtra(EXTRA_MESSAGE)
 
+/*
+//        super.onRestoreInstanceState(savedInstanceState)
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        findViewById<EditText>(R.id.ttstitle).setText(savedInstanceState?.getString("Cim"))
+        findViewById<EditText>(R.id.ttstext).setText(savedInstanceState?.getString("Szoveg"))
+        var a=savedInstanceState?.getInt("Pitch")
+        var b=savedInstanceState?.getInt("Speed")
+        var c=savedInstanceState?.getInt("Volume")
+
+        //findViewById<SeekBar>(R.id.pitchseekbar).progress=a
+       // findViewById<SeekBar>(R.id.speedseekbar).progress=b
+       // findViewById<SeekBar>(R.id.volumeseekbar).progress=c
+        Toast.makeText(this, savedInstanceState?.getString("Cim"), Toast.LENGTH_LONG).show()
+*/
 
 if(message==null){
 
@@ -203,8 +254,9 @@ if(message==null){
     ttstext = findViewById(R.id.ttstext)
     disableEditText(ttstext)
     disableEditText(ttstitle)
+    editlathato=true
 
-
+    ttstitle.setText(message)
 }
 
 
