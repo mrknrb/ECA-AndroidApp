@@ -108,38 +108,30 @@ class ttsprogram : AppCompatActivity() {
                 //System.out.println("mrk2"+teljesszoveg+cim)
                 val mondatokarray = teljesszoveg.split("#")
                 // System.out.println("mrk2"+mondatokarray[0])
-
+                mondatadatbazis.sleepDatabaseDao.clear()
                 mondatokarray.forEachIndexed { j, k ->
 
-                    val mondat5 =   k.substringAfter(System.getProperty("line.separator"),"ures")
-                    val fejezet5 =   k.substringBefore(System.getProperty("line.separator"),"ures")
-            //   val fejezet5 = k.split("abc")[0]
-            // val mondat5 = k.split("[\\\\r\\\\n]+")
 
+                    val fejezet =   k.substringBefore(System.getProperty("line.separator"),"ures")
+                    val mondatokstring =   k.substringAfter(System.getProperty("line.separator"),"ures")
+                //    System.out.println("mrk1"+k)
+         // System.out.println("mrk1"+fejezet)
+       // System.out.println("mrk1"+mondatokstring)
 
-                   //val mondat5 = k.substring(k.indexOf("\n")+1)
-                  //  val fejezet =   k.substring(0, k.indexOf("\n"))
-                    System.out.println("mrk1"+k)
-          System.out.println("mrk1"+fejezet5)
-        System.out.println("mrk1"+mondat5)
-                   // System.out.println("mrk1"+fejezet.get(1))
-                    //var fejezetcim = fejezet.get(0)
-/*
-                    var mondatokstring = fejezetesmondat.get(1)
 
                    var mondatokarray2 = mondatokstring.split(".")
 
 
                    mondatokarray2.forEachIndexed { i, s ->
-                       var mondat = Mondat(0, 0, i, s + ".", j, fejezetcim, cim, 0)
+                       var mondat = Mondat(0, 0, i, s + ".", j, fejezet, cim, 0)
 
                        mondatadatbazis.sleepDatabaseDao.insert(mondat)
                    }
-*/
+
                 }
 
 
-/*
+
                 Toast.makeText(this, "mukodik", Toast.LENGTH_LONG).show()
                 var mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondat()
 
@@ -148,7 +140,7 @@ class ttsprogram : AppCompatActivity() {
                     //Toast.makeText(this,fej,Toast.LENGTH_LONG).show()
                     System.out.println("mrk" + fej)
                 }
-*/
+
 
 
 
