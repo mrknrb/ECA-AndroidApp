@@ -18,7 +18,7 @@ class BetoltesAdapter(private val mExampleList: MutableList<BetoltesItem>) : Rec
 
   var mListener:OnItemClickListener?=null
 
-public interface OnItemClickListener{
+ interface OnItemClickListener{
     fun onItemClick(position:Int)
 
 }

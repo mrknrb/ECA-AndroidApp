@@ -20,25 +20,25 @@ class ttsbetoltes : AppCompatActivity() {
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: BetoltesAdapter? = null
     private var mLayoutManager: RecyclerView.LayoutManager? = null
-    var mExampleList= mutableListOf<BetoltesItem>()
+    var mExampleList = mutableListOf<BetoltesItem>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ttsbetoltes)
 
-      // var exampleList:List<BetoltesItem>?=null
-       // var exampleList:List<BetoltesItem> =
+        // var exampleList:List<BetoltesItem>?=null
+        // var exampleList:List<BetoltesItem> =
         val exampleList = mutableListOf<BetoltesItem>()
 
-exampleList.add(BetoltesItem("1","111"))
+        exampleList.add(BetoltesItem("1", "111"))
 
-        exampleList.add(BetoltesItem("4521","1124521"))
-        exampleList.add(BetoltesItem("42541","178711"))
-        exampleList.add(BetoltesItem("8731","1175831"))
+        exampleList.add(BetoltesItem("4521", "1124521"))
+        exampleList.add(BetoltesItem("42541", "178711"))
+        exampleList.add(BetoltesItem("8731", "1175831"))
         mRecyclerView = findViewById(R.id.recyclerview)
         mRecyclerView?.setHasFixedSize(true)
 
         mLayoutManager = LinearLayoutManager(this)
-        mAdapter =  BetoltesAdapter(exampleList)
+        mAdapter = BetoltesAdapter(exampleList)
 
         mRecyclerView?.setLayoutManager(mLayoutManager)
         mRecyclerView?.setAdapter(mAdapter)
@@ -50,7 +50,9 @@ exampleList.add(BetoltesItem("1","111"))
         }
         )
 */
-        fun buildRecyclerView (){
+
+
+        fun buildRecyclerView() {
             mRecyclerView = findViewById(R.id.recyclerview);
             mRecyclerView?.setHasFixedSize(true);
             mLayoutManager = LinearLayoutManager(this);
@@ -59,12 +61,11 @@ exampleList.add(BetoltesItem("1","111"))
             mRecyclerView?.setLayoutManager(mLayoutManager);
             mRecyclerView?.setAdapter(mAdapter);
 
-            mAdapter?.setOnItemClickListener(BetoltesAdapter.OnItemClickListener {
+            
 
-                public void onItemClick(int position) {
-                    changeItem(position, "Clicked");
-                }
-            });
+        }
+
+
 /*
 
 
