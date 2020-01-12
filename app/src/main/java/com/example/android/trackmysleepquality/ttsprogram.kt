@@ -50,7 +50,6 @@ class ttsprogram : AppCompatActivity() {
     var ttstext: EditText? = null
     var editlathato = false
 
-
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
         // Save UI state changes to the savedInstanceState.
@@ -130,7 +129,7 @@ class ttsprogram : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
-
+        var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
         var ttstitle: EditText = findViewById(R.id.ttstitle)
         return when (item.itemId) {
             R.id.edit -> {
@@ -152,7 +151,7 @@ class ttsprogram : AppCompatActivity() {
                 var cim = ttstitle?.text.toString()
                 val builder = AlertDialog.Builder(this)
                 builder.setCancelable(true)
-                var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
+
                 fun mentes() {
                     var time: Long = System.currentTimeMillis()
                     menu2?.findItem(R.id.save)?.isVisible = false
@@ -239,13 +238,16 @@ class ttsprogram : AppCompatActivity() {
         if (message == null) {
 
         } else {
+            var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
+
             Toast.makeText(applicationContext, message + " loaded", Toast.LENGTH_LONG).show()
             ttstext = findViewById(R.id.ttstext)
             disableEditText(ttstext)
             disableEditText(ttstitle)
             editlathato = true
-
             ttstitle.setText(message)
+            mondatadatbazis.sleepDatabaseDao.getAllMondat()
+            //folytasd a szöveg betöltését
         }
 
 
@@ -253,6 +255,7 @@ class ttsprogram : AppCompatActivity() {
         var mSeekBarVolume: SeekBar = findViewById(R.id.volumeseekbar)
         var mSeekBarPitch: SeekBar = findViewById(R.id.pitchseekbar)
         var speakclick: ImageButton = findViewById(R.id.playtts)
+        var stopbutton: ImageButton = findViewById(R.id.stopbutton)
         ttstext = findViewById(R.id.ttstext)
         mSeekBarPitch.max = 20
         mSeekBarPitch.progress = 10
@@ -340,10 +343,28 @@ class ttsprogram : AppCompatActivity() {
            */
         }
         speakclick.setOnClickListener {
-            speak()
+            //speak()
+
+
+var serviceIntent=Intent(this@ttsprogram,TTSService::class.java)
+            serviceIntent.putExtra(EXTRA_MESSAGE,"A notification fasza")
+startService(serviceIntent)
+
+
+
 
         }
+        stopbutton.setOnClickListener {
+            //speak()
 
+
+            var serviceIntent=Intent(this@ttsprogram,TTSService::class.java)
+            stopService(serviceIntent)
+
+
+
+
+        }
 
     }
 }

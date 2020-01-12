@@ -23,7 +23,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:gravity="right|left"
             android:orientation="horizontal"
             android:paddingBottom="10dp">
@@ -38,8 +38,9 @@
             <TextView
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:onClick="ttsopen"
                 android:text="1. TTS Method"
                 android:textSize="30sp" />
@@ -47,30 +48,31 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:gravity="left"
             android:orientation="horizontal"
             android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
+                android:layout_width="112dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@android:drawable/arrow_up_float" />
+                app:srcCompat="@android:drawable/ic_dialog_dialer" />
 
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="2. Navigation Method"
                 android:textSize="30sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:gravity="right|left"
             android:orientation="horizontal">
 
@@ -84,8 +86,9 @@
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="3. Calling Method"
                 android:textSize="30sp" />
         </LinearLayout>
