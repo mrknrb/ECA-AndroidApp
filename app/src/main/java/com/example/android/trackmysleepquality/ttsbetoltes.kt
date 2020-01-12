@@ -68,9 +68,10 @@ class ttsbetoltes : AppCompatActivity() {
 
                 //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 //intent.setClassName(this@ttsbetoltes,"com.example");
-
+                finish();
+                overridePendingTransition(0, 0);
                 startActivity(intent);
-
+                overridePendingTransition(0, 0);
 
                // Toast.makeText(applicationContext,  myFriends[i]+"Opened", Toast.LENGTH_LONG).show()
 
