@@ -2,13 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/save"
-        android:title="Save"
-        android:visible="true" />
-    <item
         android:id="@+id/edit"
-        android:title="Edit"
-        android:visible="false" />
+        android:title="Edit"/>
     <item
         android:id="@+id/reset"
         android:title="Reset" />

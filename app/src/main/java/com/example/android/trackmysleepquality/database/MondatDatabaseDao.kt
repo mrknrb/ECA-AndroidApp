@@ -42,5 +42,11 @@ interface MondatDatabaseDao {
     fun deletefile(filename:String)
     @Query("SELECT filename FROM mondatoktabla GROUP BY filename")
     fun getAllFile(): List<String>
+    @Query("SELECT fejezetcim FROM mondatoktabla WHERE filename LIKE :filename GROUP BY fejezetcim ORDER BY fejezetindex ASC")
+    fun getAllFejezetFileAlapjan(filename:String): List<String>
+    @Query("SELECT mondat FROM mondatoktabla WHERE filename LIKE :filename ORDER BY mondatid ASC" )
+    fun getAllMondatFileAlapjan(filename:String): List<String>
+    @Query("SELECT mondat FROM mondatoktabla WHERE filename LIKE :filename AND fejezetcim LIKE :fejezet ORDER BY mondatindex ASC")
+    fun getAllMondatFileEsFejezetAlapjan(filename:String,fejezet:String): List<String>
 }
 
