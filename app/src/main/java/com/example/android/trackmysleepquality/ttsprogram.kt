@@ -38,10 +38,18 @@ import android.content.Intent
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.provider.AlarmClock.EXTRA_MESSAGE
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
+
+
 
 
 class ttsprogram : AppCompatActivity() {
@@ -49,6 +57,11 @@ class ttsprogram : AppCompatActivity() {
     var menu2: Menu? = null
     var ttstext: EditText? = null
     var editlathato = false
+    override fun onBackPressed() {
+
+        moveTaskToBack(true)
+    }
+
 
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
@@ -140,11 +153,6 @@ class ttsprogram : AppCompatActivity() {
                 enableEditText(ttstitle)
                 true
             }
-            R.id.load -> {
-                Toast.makeText(this, "load", Toast.LENGTH_LONG).show()
-                ttsopen2()
-                true
-            }
             R.id.save -> {
                 Toast.makeText(this, "save", Toast.LENGTH_LONG).show()
                 var teljesszoveg = ttstext?.text.toString()
@@ -215,6 +223,14 @@ class ttsprogram : AppCompatActivity() {
                 }
                 true
             }
+            R.id.settings -> {
+                val intent = Intent(this, MainActivity::class.java)
+                // val editText = findViewById(R.id.editText) as EditText
+                //  val message = editText.text.toString()
+                //  intent.putExtra(EXTRA_MESSAGE, message)
+                startActivity(intent)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -264,8 +280,13 @@ class ttsprogram : AppCompatActivity() {
         mSeekBarVolume.max = 40
         mSeekBarVolume.progress = 10
 
+        val loadbutton:Button=findViewById(R.id.loadbutton)
+        loadbutton.setOnClickListener{
+            ttsopen2()
+        }
 
-        mSeekBarSpeed.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
+    mSeekBarSpeed.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 // Display the current progress of SeekBar
@@ -346,11 +367,9 @@ class ttsprogram : AppCompatActivity() {
             //speak()
 
 
-var serviceIntent=Intent(this@ttsprogram,TTSService::class.java)
-            serviceIntent.putExtra(EXTRA_MESSAGE,"A notification fasza")
-startService(serviceIntent)
-
-
+            var serviceIntent = Intent(this@ttsprogram, TTSService::class.java)
+            serviceIntent.putExtra(EXTRA_MESSAGE, "A notification fasza")
+            startService(serviceIntent)
 
 
         }
@@ -358,10 +377,8 @@ startService(serviceIntent)
             //speak()
 
 
-            var serviceIntent=Intent(this@ttsprogram,TTSService::class.java)
+            var serviceIntent = Intent(this@ttsprogram, TTSService::class.java)
             stopService(serviceIntent)
-
-
 
 
         }

@@ -8,7 +8,7 @@
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_sleep_tracker"
-        android:label="@string/app_name"
+        android:label="Exam Cheating Academy"
         android:roundIcon="@mipmap/ic_launcher_sleep_tracker_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -23,12 +23,10 @@
         </activity>
         <activity
             android:name=".ttsprogram"
-            android:label="1. TTS Method"
-            android:parentActivityName=".MainActivity" />
+            android:label="Text to Speech Player"/>
         <activity
             android:name=".ttsbetoltes"
-            android:label="@string/title_activity_ttsbetoltes"
-            android:parentActivityName=".ttsprogram">
+            android:label="@string/title_activity_ttsbetoltes">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.trackmysleepquality.ttsprogram" />

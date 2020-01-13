@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -22,6 +23,11 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 
@@ -29,8 +35,17 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 class ttsbetoltes : AppCompatActivity() {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                this.finish()
 
-
+                 Toast.makeText(applicationContext,"vissza", Toast.LENGTH_LONG).show()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
     private lateinit var listView: ListView
     /*
     override fun onCreateContextMenu(menu:ContextMenu , v:ListView , menuInfo: AdapterView.AdapterContextMenuInfo) {
@@ -54,6 +69,7 @@ class ttsbetoltes : AppCompatActivity() {
         var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this@ttsbetoltes)
         val friendsListView = findViewById<ListView>(R.id.listview)
 
+        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         val myFriends = mondatadatbazis.sleepDatabaseDao.getAllFile()
 
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, myFriends)
@@ -65,13 +81,16 @@ class ttsbetoltes : AppCompatActivity() {
 
                 val intent = Intent(this@ttsbetoltes, ttsprogram::class.java)
                intent.putExtra(EXTRA_MESSAGE, myFriends[i])
+                intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP)
+
+
 
                 //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 //intent.setClassName(this@ttsbetoltes,"com.example");
-                finish();
-                overridePendingTransition(0, 0);
+               // finish();
+               // overridePendingTransition(0, 0);
                 startActivity(intent);
-                overridePendingTransition(0, 0);
+              //  overridePendingTransition(0, 0);
 
                // Toast.makeText(applicationContext,  myFriends[i]+"Opened", Toast.LENGTH_LONG).show()
 
@@ -84,13 +103,16 @@ class ttsbetoltes : AppCompatActivity() {
 
                 val builder = AlertDialog.Builder(this@ttsbetoltes)
                 builder.setCancelable(true)
-                builder.setMessage("Do you want to delete this?")
-                builder.setNegativeButton("No", DialogInterface.OnClickListener { dialogInterface, itt -> dialogInterface.cancel() })
-                builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialogInterface, itt ->
+                //builder.setMessage("Do you want to delete this?")
+                builder.setNegativeButton("Edit", DialogInterface.OnClickListener { dialogInterface, itt -> dialogInterface.cancel() })
+                builder.setPositiveButton("Delete", DialogInterface.OnClickListener { dialogInterface, itt ->
 
 
                     mondatadatbazis.sleepDatabaseDao.deletefile(myFriends[i])
                     Toast.makeText(applicationContext,  myFriends[i]+" deleted" , Toast.LENGTH_LONG).show()
+
+
+
                     finish();
                     overridePendingTransition(0, 0);
                     startActivity(getIntent());

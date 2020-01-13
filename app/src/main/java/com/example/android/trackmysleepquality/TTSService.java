@@ -24,15 +24,15 @@ public class TTSService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String input = intent.getStringExtra("inputExtra");
+        String input = intent.getStringExtra("EXTRA_MESSAGE");
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Example Service")
-                //.setSmallIcon(R.drawable.ic_android)
+                .setContentTitle("Text to Speech")
+                .setSmallIcon(R.drawable.ic_sleep_5)
                 .setContentText(input)
                 .setContentIntent(pendingIntent)
                 .build();

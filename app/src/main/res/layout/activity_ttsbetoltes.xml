@@ -6,16 +6,83 @@
     android:layout_height="match_parent"
     tools:context=".ttsbetoltes">
 
+    <EditText
+        android:id="@+id/ttstext2"
+        style="@style/Widget.AppCompat.AutoCompleteTextView"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="start|top"
+        android:hint="Enter text [1. This means a chapter]"
+        android:inputType="textMultiLine"
+        android:scrollbarSize="10dp"
+        android:text="#1. World War II\n(often abbreviated to WWII or WW2), abc lso known as the Second World War, was a global war that lasted from 1939 to 1945. The vast majority of the world's countries—including all the great\n powers—eventually formed two opposing military alliances:          the Allies and the Axis. A state of total war emerged, directly involving more than 100 million people from more than 30 countries.The major participants threw their entire economic, industrial, and scientific capabilities behind the war effort, blurring the distinction between civilianand military resources. World War II was the deadliest conflict in human history, marked by 70 to 85 million fatalities, most of whom were civilians in the SovietUnion and China. It included massacres, the genocide of the Holocaust, strategic bombing, premeditated death from starvation and disease, and the only use ofnuclear weapons in war.#Usa states \n abcAlabama.  Alaska.  Arizona  Arkansas  California  Colorado.  Connecticut  Delaware  Florida  Georgia  HawaiiIdaho  Illinois  Indiana  Iowa  Kansas  Kentucky  Louisiana  Maine  Maryland.  Massachusetts  Michigan  Minnesota  Mississippi . Missouri  MontanaNebraska  Nevada  New Hampshire  New Jersey  New Mexico. \nNew York  North Carolina  North. Dakota  Ohio  Oklahoma  Oregon  Pennsylvania.  RhodeIsland  South Carolina  South. Dakota  Tennessee  Texas  Utah.  Vermont  Virginia  Washington  West Virginia.  Wisconsin  Wyoming#3. Remindersabc \ndghmdhm. stjsfgjstjsftj.jstjstjsts.\njtsjstjstjsjgfjsfgj.s.gfj.\nsfgjsfg.jsfgjs.fgjfsg.jsfgj.sgfjsfg.jsfgjfsgjsgf.jsfgjfsg.j "
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/ttstitle2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ems="10"
+        android:hint="Give a title"
+        android:inputType="textPersonName"
+        android:text="World war"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toStartOf="@+id/button5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ttstext2" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ttstitle2">
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Or select text" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Load from file" />
+    </LinearLayout>
+
     <ListView
         android:id="@+id/listview"
         android:layout_width="0dp"
-        android:layout_height="729dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="1dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+    </ListView>
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Save text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ttstext2" />
 </androidx.constraintlayout.widget.ConstraintLayout>
