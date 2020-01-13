@@ -64,10 +64,9 @@ public class TTSService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-//todo icont változtasd meg
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Text to Speech")
-                .setSmallIcon(R.drawable.ic_sleep_5)
+                .setSmallIcon(R.drawable.ic_launcher_sleep_tracker_foreground)
                 .setContentText(input)
                 .setContentIntent(pendingIntent)
                 .build();
