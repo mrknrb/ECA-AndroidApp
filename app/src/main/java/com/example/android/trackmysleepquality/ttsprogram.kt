@@ -41,6 +41,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.media.MediaPlayer
 import android.widget.*
 
 
@@ -48,8 +49,9 @@ class ttsprogram : AppCompatActivity() {
     private var mTTS: TextToSpeech? = null
     var menu2: Menu? = null
     var ttstext: EditText? = null
+    lateinit var myTts: TextToSpeech
     override fun onBackPressed() {
-
+        var myTts: TextToSpeech
         moveTaskToBack(true)
     }
 
@@ -112,6 +114,11 @@ class ttsprogram : AppCompatActivity() {
         val message = intent.getStringExtra(EXTRA_MESSAGE)
         var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
 
+        myTts = TextToSpeech(applicationContext, TextToSpeech.OnInitListener { status ->
+            if (status != TextToSpeech.ERROR) {
+                myTts.setLanguage(Locale.US)
+            }
+        })
 
         ttstext = findViewById(R.id.ttstext)
 
@@ -240,19 +247,21 @@ class ttsprogram : AppCompatActivity() {
             //speak()
 
 
-            var serviceIntent = Intent(this@ttsprogram, TTSService::class.java)
-            serviceIntent.putExtra(EXTRA_MESSAGE, "A notification fasza")
-            startService(serviceIntent)
+           // var serviceIntent = Intent(this@ttsprogram, PlayerService::class.java)
+           // serviceIntent.putExtra(EXTRA_MESSAGE, "A notification fasza")
+           // startService(serviceIntent)
 
+            startService(Intent(this, PlayerService::class.java))
 
         }
         stopbutton.setOnClickListener {
             //speak()
 
 
-            var serviceIntent = Intent(this@ttsprogram, TTSService::class.java)
-            stopService(serviceIntent)
+          //  var serviceIntent = Intent(this@ttsprogram, PlayerService::class.java)
+          //  stopService(serviceIntent)
 
+            stopService(Intent(this, PlayerService::class.java))
 
         }
 

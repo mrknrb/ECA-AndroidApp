@@ -30,7 +30,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 class MainActivity : AppCompatActivity() {
-
+/*
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return false
-    }
+    }*/
 
 
     fun ttsopen(view: View) {
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        /*
        if( isMyServiceRunning(TTSService::class.java)==true){
 
            val intent = Intent(this, ttsprogram::class.java)
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
            finish();
            startActivity(intent)
-       }
+       }*/
 
 
 /*
