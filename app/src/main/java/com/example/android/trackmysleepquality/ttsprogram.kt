@@ -43,6 +43,11 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.media.MediaPlayer
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class ttsprogram : AppCompatActivity() {
@@ -251,7 +256,11 @@ class ttsprogram : AppCompatActivity() {
            // serviceIntent.putExtra(EXTRA_MESSAGE, "A notification fasza")
            // startService(serviceIntent)
 
-            startService(Intent(this, PlayerService::class.java))
+            val serviceIntent = Intent(this, PlayerService::class.java)
+            // serviceIntent.putExtra("inputExtra", input)
+            ContextCompat.startForegroundService(this, serviceIntent)
+           // startService(Intent(this, PlayerService::class.java))
+
 
         }
         stopbutton.setOnClickListener {
