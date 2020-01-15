@@ -78,6 +78,8 @@ class ttsbetoltes : AppCompatActivity() {
                 override fun onItemClick(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
 
                     fun szovegvisszaallito() {
+
+
                         val szovegvisszaallitott = StringBuilder()
                         ttstitle.setText(myFriends[i])
                         szovegvisszaallitott.toString()
@@ -91,6 +93,7 @@ class ttsbetoltes : AppCompatActivity() {
                             }
                         }
                         ttstext.setText(szovegvisszaallitott.toString())
+                        ttstextModositasElott = szovegvisszaallitott.toString()
                         //  overridePendingTransition(0, 0);
                         // Toast.makeText(applicationContext,  myFriends[i]+"Opened", Toast.LENGTH_LONG).show()
                        // ttstextModositasElott=szovegvisszaallitott.toString()
@@ -108,7 +111,6 @@ class ttsbetoltes : AppCompatActivity() {
                         })
                         builder.show()
                     }
-                   ttstextModositasElott = findViewById<EditText>(R.id.ttstext).text.toString()
 
                 }
             })
