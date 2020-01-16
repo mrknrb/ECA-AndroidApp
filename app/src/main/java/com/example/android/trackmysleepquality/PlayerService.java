@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -88,18 +89,11 @@ public class PlayerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-
-
-
-
-
         if (mediaSession.getController().getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
-           // MainActivity.showText("mediaSession set PAUSED state");
             mediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
                     .setState(PlaybackStateCompat.STATE_PAUSED, 0, 0.0f)
                     .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE).build());
         } else {
-           // MainActivity.showText("mediaSession set PLAYING state");
             mediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
                     .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1.0f)
                     .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE).build());
@@ -118,18 +112,23 @@ public class PlayerService extends Service {
                 .addAction(R.drawable.ic_sleep_0, "Next", null)
                 .addAction(R.drawable.ic_sleep_1, "Like", null)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(1, 2, 3)
+                        .setShowActionsInCompactView(2, 3, 4)
                 )
                 .setSubText("Sub Text")
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                //.setContentIntent(pendingIntent)
                 .build();
 
         startForeground(1, notification);
 
+        // todo lehet, hogy nem kell, de ez a néma hangos trükk
+        /* final MediaPlayer mMediaPlayer;
+        mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.silent_sound);
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override            public void onCompletion(MediaPlayer mediaPlayer) {
+                mMediaPlayer.release();            }        });        mMediaPlayer.start();  */
 
 
-        return START_NOT_STICKY; // super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     @Override

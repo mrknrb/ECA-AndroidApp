@@ -30,53 +30,13 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 class MainActivity : AppCompatActivity() {
-/*
-    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-        return false
-    }*/
-
-
     fun ttsopen(view: View) {
         val intent = Intent(this, ttsprogram::class.java)
-       // val editText = findViewById(R.id.editText) as EditText
-      //  val message = editText.text.toString()
-      //  intent.putExtra(EXTRA_MESSAGE, message)
         startActivity(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        /*
-       if( isMyServiceRunning(TTSService::class.java)==true){
-
-           val intent = Intent(this, ttsprogram::class.java)
-           // val editText = findViewById(R.id.editText) as EditText
-           //  val message = editText.text.toString()
-           //  intent.putExtra(EXTRA_MESSAGE, message)
-
-           finish();
-           startActivity(intent)
-       }*/
-
-
-/*
-        val db = Room.databaseBuilder(
-            applicationContext,
-            Adatbazis::class.java, "Adatbazis"
-        ).build()
-        val mondat= Mondat(0,4,"dfgdfgg",3,"hsgfhdfgh","dfbdfb",4)
-db.adatbazisdao.insert(mondat)
-
-        val testmondat:Mondat?
-        testmondat  =db.adatbazisdao.utolsomondat()
-System.out.println(testmondat)
-        */
     }
 }
