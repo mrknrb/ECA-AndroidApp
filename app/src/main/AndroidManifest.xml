@@ -32,11 +32,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.trackmysleepquality.ttsprogram" />
         </activity>
-
+        <service android:name=".TTSAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data android:name="android.accessibilityservice"
+                android:resource="@xml/accessibilityservice" />
+        </service>
         <service
             android:name=".PlayerService"
             android:enabled="true"
             android:exported="true" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <receiver
             android:name=".RemoteReceiver"
@@ -44,11 +55,9 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="android.intent.action." />
             </intent-filter>
         </receiver>
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

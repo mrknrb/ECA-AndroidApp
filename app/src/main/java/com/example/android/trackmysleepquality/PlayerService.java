@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.KeyEvent;
@@ -18,16 +19,22 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.Locale;
+
 import static com.example.android.trackmysleepquality.App.CHANNEL_ID;
 
 public class PlayerService extends Service {
     public static final String TAG = "MPS";
     private MediaSessionCompat mediaSession;
+    TextToSpeech myTts;
+
     private final MediaSessionCompat.Callback mMediaSessionCallback
             = new MediaSessionCompat.Callback() {
         @Override
         public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
             final String intentAction = mediaButtonEvent.getAction();
+
+            Toast.makeText(getApplicationContext(), "valami", Toast.LENGTH_SHORT).show();
             if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
                 final KeyEvent event = mediaButtonEvent.getParcelableExtra(
                         Intent.EXTRA_KEY_EVENT);
@@ -42,6 +49,25 @@ public class PlayerService extends Service {
                         // Do what you want in here
                         case KeyEvent.KEYCODE_MEDIA_PLAY:
                             Toast.makeText(getApplicationContext(), "play", Toast.LENGTH_SHORT).show();
+
+
+                            String toSpeak = "This is a sample text that should play with Android default TTS engine.";
+                            Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+/*
+                                // Stupid Android 8 "Oreo" hack to make media buttons work
+                                final MediaPlayer mMediaPlayer;
+                                mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.silent_sound);
+                                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                    @Override
+                                    public void onCompletion(MediaPlayer mediaPlayer) {
+                                        mMediaPlayer.release();
+                                    }
+                                });
+                                mMediaPlayer.start();
+*/
+                            myTts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+
+
                             break;
                         case KeyEvent.KEYCODE_MEDIA_PAUSE:
                             Toast.makeText(getApplicationContext(), "pause", Toast.LENGTH_SHORT).show();
@@ -51,6 +77,13 @@ public class PlayerService extends Service {
                             break;
                         case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                             Toast.makeText(getApplicationContext(), "previous", Toast.LENGTH_SHORT).show();
+                            break;
+
+                        case KeyEvent.KEYCODE_VOLUME_DOWN:
+                            Toast.makeText(getApplicationContext(), "vol down", Toast.LENGTH_SHORT).show();
+                            break;
+                        case KeyEvent.KEYCODE_VOLUME_UP:
+                            Toast.makeText(getApplicationContext(), "vol up", Toast.LENGTH_SHORT).show();
                             break;
                     }
                     startService(new Intent(getApplicationContext(), PlayerService.class));
@@ -63,6 +96,17 @@ public class PlayerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        myTts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    myTts.setLanguage(Locale.US);
+                }
+            }
+        });
+
+
         ComponentName receiver = new ComponentName(getPackageName(), RemoteReceiver.class.getName());
         mediaSession = new MediaSessionCompat(this, "PlayerService", receiver, null);
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -120,12 +164,12 @@ public class PlayerService extends Service {
 
         startForeground(1, notification);
 
-        // todo lehet, hogy nem kell, de ez a néma hangos trükk
-        /* final MediaPlayer mMediaPlayer;
+        // lehet, hogy nem kell, de ez a néma hangos trükk
+       final MediaPlayer mMediaPlayer;
         mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.silent_sound);
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override            public void onCompletion(MediaPlayer mediaPlayer) {
-                mMediaPlayer.release();            }        });        mMediaPlayer.start();  */
+                mMediaPlayer.release();            }        });        mMediaPlayer.start();
 
 
         return START_NOT_STICKY;
