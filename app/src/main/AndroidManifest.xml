@@ -8,6 +8,7 @@
     />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Exam Cheating Academy"
@@ -45,9 +46,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
 
         <receiver
             android:name=".RemoteReceiver"
@@ -55,7 +53,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
-                <action android:name="android.intent.action." />
             </intent-filter>
         </receiver>
     </application>
