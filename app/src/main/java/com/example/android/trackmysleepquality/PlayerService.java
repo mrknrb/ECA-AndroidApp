@@ -33,8 +33,6 @@ public class PlayerService extends Service {
         @Override
         public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
             final String intentAction = mediaButtonEvent.getAction();
-
-            Toast.makeText(getApplicationContext(), "valami", Toast.LENGTH_SHORT).show();
             if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
                 final KeyEvent event = mediaButtonEvent.getParcelableExtra(
                         Intent.EXTRA_KEY_EVENT);
@@ -77,13 +75,6 @@ public class PlayerService extends Service {
                             break;
                         case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                             Toast.makeText(getApplicationContext(), "previous", Toast.LENGTH_SHORT).show();
-                            break;
-
-                        case KeyEvent.KEYCODE_VOLUME_DOWN:
-                            Toast.makeText(getApplicationContext(), "vol down", Toast.LENGTH_SHORT).show();
-                            break;
-                        case KeyEvent.KEYCODE_VOLUME_UP:
-                            Toast.makeText(getApplicationContext(), "vol up", Toast.LENGTH_SHORT).show();
                             break;
                     }
                     startService(new Intent(getApplicationContext(), PlayerService.class));
