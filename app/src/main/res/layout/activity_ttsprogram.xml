@@ -104,7 +104,7 @@
             android:paddingBottom="6dp">
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/startbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:background="#92FFFFFF"

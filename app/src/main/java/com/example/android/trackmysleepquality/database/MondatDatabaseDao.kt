@@ -46,6 +46,8 @@ interface MondatDatabaseDao {
     fun getAllFejezetFileAlapjan(filename:String): List<String>
     @Query("SELECT mondat FROM mondatoktabla WHERE filename LIKE :filename ORDER BY mondatid ASC" )
     fun getAllMondatFileAlapjan(filename:String): List<String>
+    @Query("SELECT * FROM mondatoktabla WHERE filename LIKE :filename ORDER BY mondatid ASC" )
+    fun getAllMondatObjectFileAlapjan(filename:String): List<Mondat>
     @Query("SELECT mondat FROM mondatoktabla WHERE filename LIKE :filename AND fejezetcim LIKE :fejezet ORDER BY mondatindex ASC")
     fun getAllMondatFileEsFejezetAlapjan(filename:String,fejezet:String): List<String>
 }

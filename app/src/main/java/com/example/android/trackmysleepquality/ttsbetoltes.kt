@@ -157,7 +157,7 @@ class ttsbetoltes : AppCompatActivity() {
                 // System.out.println("mrk2"+mondatokarray[0])
                 mondatokarray.forEachIndexed { j, k ->
                     if (k != "") {
-                        System.out.println("mrknrb" + k)
+                       // System.out.println("mrknrb" + k)
                         val fejezet = k.substringBefore(System.getProperty("line.separator"), "ures")
                         val mondatokstring = k.substringAfter(System.getProperty("line.separator"), "ures")
                         var mondatokarray2 = mondatokstring.split(".")
@@ -174,7 +174,7 @@ class ttsbetoltes : AppCompatActivity() {
                 mondatok.forEach {
                     var fej = mondatadatbazis.sleepDatabaseDao.fajlnevfoglalt(cim)?.filename
                     //Toast.makeText(this,fej,Toast.LENGTH_LONG).show()
-                    System.out.println("mrk" + fej)
+                   // System.out.println("mrk" + fej)
                 }
             }
 
@@ -188,6 +188,7 @@ class ttsbetoltes : AppCompatActivity() {
                 // overridePendingTransition(0, 0);
                 startActivity(intent);
             }
+            var foglalt=mondatadatbazis.sleepDatabaseDao.fajlnevfoglalt(cim)?.filename == cim
             if (teljesszoveg == "") {
                 builder.setMessage("The text field is empty!")
                 builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
@@ -200,7 +201,7 @@ class ttsbetoltes : AppCompatActivity() {
                 builder.setMessage("Please give a title!")
                 builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
                 builder.show()
-            } else if (mondatadatbazis.sleepDatabaseDao.fajlnevfoglalt(cim)?.filename == cim && ttstextModositasElott != findViewById<EditText>(R.id.ttstext).text.toString()) {
+            } else if (foglalt&& ttstextModositasElott != findViewById<EditText>(R.id.ttstext).text.toString()) {
                 builder.setTitle("The title is taken!")
                 builder.setMessage("Would you like to override it? Your old file will be deleted!")
                 builder.setNegativeButton("No", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
@@ -210,10 +211,12 @@ class ttsbetoltes : AppCompatActivity() {
                     load(cim)
                 })
                 builder.show()
-            } else {
-                mentes()
+            } else if (foglalt ){
                 load(cim)
 
+            }else if (foglalt ==false){
+                mentes()
+                load(cim)
             }
             true
         }

@@ -1,6 +1,7 @@
 package com.example.android.trackmysleepquality
 
 //import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.widget.EditText
@@ -25,6 +26,19 @@ import android.view.KeyEvent
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.app.ActivityCompat.requestPermissions
+import android.Manifest.permission
+import android.Manifest.permission.CALL_PHONE
+import android.Manifest.permission.READ_PHONE_STATE
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 
@@ -34,9 +48,29 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ttsprogram::class.java)
         startActivity(intent)
     }
-
+    private val PERMISSION_REQUEST_READ_PHONE_STATE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED || checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
+                val permissions = arrayOf<String>(Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE)
+                requestPermissions(permissions, PERMISSION_REQUEST_READ_PHONE_STATE)
+            }
+        }
     }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            PERMISSION_REQUEST_READ_PHONE_STATE -> {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permission granted: $PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Permission NOT granted: $PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
+                }
+
+                return
+            }
+        }
+    }
+
 }

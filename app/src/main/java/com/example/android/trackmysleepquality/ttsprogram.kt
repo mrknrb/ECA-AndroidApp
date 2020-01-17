@@ -70,7 +70,7 @@ class ttsprogram : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
-        var ttstitle: EditText = findViewById(R.id.ttstitle)
+
         return when (item.itemId) {
             R.id.edit -> {
                 Toast.makeText(this, "edit", Toast.LENGTH_LONG).show()
@@ -97,12 +97,15 @@ class ttsprogram : AppCompatActivity() {
         val message = intent.getStringExtra(EXTRA_MESSAGE)
         var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
         ttstext = findViewById(R.id.ttstext)
+        var ttstitle: EditText = findViewById(R.id.ttstitle)
         var mSeekBarSpeed: SeekBar = findViewById(R.id.speedseekbar)
         var mSeekBarVolume: SeekBar = findViewById(R.id.volumeseekbar)
         var mSeekBarPitch: SeekBar = findViewById(R.id.pitchseekbar)
         var speakclick: ImageButton = findViewById(R.id.playtts)
         var stopbutton: ImageButton = findViewById(R.id.stopbutton)
         var fejezetlista: ListView = findViewById(R.id.fejezetlista)
+        var startbutton: Button = findViewById(R.id.startbutton)
+        val builder = AlertDialog.Builder(this)
         mSeekBarPitch.max = 20
         mSeekBarPitch.progress = 10
         mSeekBarSpeed.max = 40
@@ -156,10 +159,27 @@ class ttsprogram : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
             }
         })
+        startbutton.setOnClickListener {
+            if(ttstitle.text.toString()=="") {
+                builder.setMessage("Please load a file!")
+                builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                builder.show()
+            }else if(mondatadatbazis.sleepDatabaseDao.fajlnevfoglalt(ttstitle.text.toString())==null){
+                builder.setMessage("File not found!")
+                builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                builder.show()
+
+            }else {
+
+                val serviceIntent = Intent(this, PlayerService::class.java)
+                // serviceIntent.putExtra("inputExtra", input)
+             serviceIntent.putExtra("cim", ttstitle.text.toString())
+                ContextCompat.startForegroundService(this, serviceIntent)
+            }
+
+        }
         speakclick.setOnClickListener {
-            val serviceIntent = Intent(this, PlayerService::class.java)
-            // serviceIntent.putExtra("inputExtra", input)
-            ContextCompat.startForegroundService(this, serviceIntent)
+
         }
         stopbutton.setOnClickListener {
             stopService(Intent(this, PlayerService::class.java))
