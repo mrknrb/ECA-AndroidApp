@@ -39,7 +39,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
     internal lateinit var fejezetek: List<String>
     internal lateinit var mondatok: List<String>
     internal var bongeszoallapot = true
-    internal var cim: String? = null
+    internal var cim: String = ""
     var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
     override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
         Toast.makeText(applicationContext, "play", Toast.LENGTH_SHORT).show()
@@ -56,17 +56,47 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
     fun playpause() {
 
         var kozepsoduplakattjelenido = System.currentTimeMillis()
-        if ((kozepsoduplakattjelenido - kozepsoduplakattelozoido) > 600) {
+        if ((kozepsoduplakattjelenido - kozepsoduplakattelozoido) > 800) {
             if (bongeszoallapot) {
 
                 myTts.speak((aktualisfejezetindex + 1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
 
             } else {
 
+                myTts.speak( mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+
+
+
             }
 
         } else {
-            myTts.speak("change mod", TextToSpeech.QUEUE_FLUSH, null)
+            if (bongeszoallapot) {
+                mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(cim, fejezetek[aktualisfejezetindex])
+                for (mondat in mondatok) {
+                    System.out.println("mrk" + mondat)
+                    mondatokszama = mondatokszama + 1
+                }
+
+
+                var aktualisfejezetszoveg = aktualisfejezetindex + 1
+                var fejezetszamaszoveg = fejezetekszama + 1
+                myTts.stop()
+                myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+
+                bongeszoallapot=false
+            } else {
+                var aktualisfejezetszoveg = aktualisfejezetindex + 1
+                var fejezetszamaszoveg = fejezetekszama + 1
+                myTts.stop()
+                myTts.speak("Closing" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+
+
+                bongeszoallapot=true
+            }
+
+
+           // myTts.speak("change mod", TextToSpeech.QUEUE_FLUSH, null)
+
 
         }
         kozepsoduplakattelozoido = System.currentTimeMillis()
@@ -84,10 +114,20 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
             } else {
                 var aktualisfejezetszoveg = aktualisfejezetindex + 1
                 var fejezetszamaszoveg = fejezetekszama + 1
+
                 myTts.speak("Last Part:" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         } else {
+            if (aktualismondatindex < mondatokszama) {
+                aktualismondatindex++
 
+                myTts.speak(mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+            } else {
+                var aktualismondatszoveg = aktualismondatindex + 1
+                var mondatokszamaszoveg = mondatokszama + 1
+
+                myTts.speak("Last Sentence:" + aktualismondatszoveg.toString() + "Out of" + mondatokszamaszoveg.toString() + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+            }
         }
 
 
@@ -102,10 +142,20 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
             } else {
                 var aktualisfejezetszoveg = aktualisfejezetindex + 1
                 var fejezetszamaszoveg = fejezetekszama + 1
+
                 myTts.speak("First Part:" + aktualisfejezetszoveg + "Out of" + fejezetszamaszoveg + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         } else {
+            if (aktualismondatindex > 0) {
+                aktualismondatindex--
 
+                myTts.speak( mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+            } else {
+                var aktualismondatszoveg = aktualismondatindex + 1
+                var mondatokszamaszoveg = mondatokszama + 1
+
+                myTts.speak("First Sentence:" + aktualismondatszoveg.toString() + "Out of" + mondatokszamaszoveg.toString() + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+            }
         }
     }
 
@@ -202,22 +252,17 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
         //public void ttsfunction(cim)
 
         // ttsEngineMrk.cim= ;
-        if (cim == null) {
+        if (cim == "") {
             cim = intent.getStringExtra("cim")
             var cim2 = intent.getStringExtra("cim")
             fejezetek = mondatadatbazis.sleepDatabaseDao.getAllFejezetFileAlapjan(cim2)
             for (fejezet in fejezetek) {
                 fejezetekszama = fejezetekszama + 1
             }
-            mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(intent.getStringExtra("cim"), fejezetek[aktualisfejezetindex])
-            for (mondat in mondatok) {
-                System.out.println("mrk" + mondat)
-                mondatokszama = mondatokszama + 1
-            }
 
-            System.out.println("mrkfejezetekszama" + fejezetekszama)
-            System.out.println("mrkmondatokszama" + mondatokszama)
-            System.out.println("mrk1.mondat" + mondatok[0])
+           // System.out.println("mrkfejezetekszama" + fejezetekszama)
+           // System.out.println("mrkmondatokszama" + mondatokszama)
+          //  System.out.println("mrk1.mondat" + mondatok[0])
 
             //  Toast.makeText(getApplicationContext(), ttsEngineMrk.cim, Toast.LENGTH_SHORT).show();
 

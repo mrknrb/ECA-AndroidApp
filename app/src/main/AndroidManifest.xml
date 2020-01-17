@@ -3,13 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.android.trackmysleepquality">
 <uses-permission
-    android:name="android.permission.FOREGROUND_SERVICE"
-
-    />
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -36,7 +31,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.trackmysleepquality.ttsprogram" />
         </activity>
-        <service android:name=".TTSAccessibilityService"
+        <service android:name=".NavigationAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
@@ -48,20 +43,6 @@
             android:name=".PlayerService"
             android:enabled="true"
             android:exported="true" />
-        <receiver
-            android:name=".BlockOutgoing"
-            android:label="@string/app_name" >
-            <intent-filter android:priority="1">
-
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-
-            </intent-filter>
-        </receiver>
-        <receiver  android:name=".IncomingCallReceiver" android:enabled="true" android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name=".RemoteReceiver"

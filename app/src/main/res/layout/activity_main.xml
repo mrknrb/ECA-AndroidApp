@@ -66,6 +66,7 @@
                 android:layout_height="100dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:onClick="navigation"
                 android:text="2. Navigation Method"
                 android:textSize="30sp" />
         </LinearLayout>

@@ -37,13 +37,17 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
-
-
+import android.provider.Settings
 
 
 class MainActivity : AppCompatActivity() {
+
+    fun navigation(view: View){
+        startActivity( Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+
+    }
+
+
     fun ttsopen(view: View) {
         val intent = Intent(this, ttsprogram::class.java)
         startActivity(intent)
