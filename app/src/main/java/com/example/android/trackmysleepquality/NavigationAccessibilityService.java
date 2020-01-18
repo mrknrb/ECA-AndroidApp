@@ -4,6 +4,8 @@ import android.accessibilityservice.AccessibilityService;
 import android.graphics.PixelFormat;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -12,8 +14,9 @@ import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import static android.content.ContentValues.TAG;
+
 public class NavigationAccessibilityService extends AccessibilityService  {
-    private WindowManager              mWindowManager;
     private WindowManager.LayoutParams mWindowsParams;
     private View mView;
     private boolean wasInFocus = true;
@@ -25,12 +28,40 @@ public class NavigationAccessibilityService extends AccessibilityService  {
         Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
 System.out.println("mrkstart");
     }
-    
 
 
+    private WindowManager mWindowManager;
+    private View mChatHeadView;
     @Override
     public void onCreate() {
         super.onCreate();
+
+
+
+        mChatHeadView = LayoutInflater.from(this).inflate(R.layout.layout_chat_head, null);
+
+
+        //Add the view to the window.
+        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+
+        //Specify the chat head position
+//Initially view will be added to top-left corner
+        params.gravity = Gravity.TOP | Gravity.LEFT;
+        params.x = 0;
+        params.y = 100;
+
+        //Add the view to the window
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        mWindowManager.addView(mChatHeadView, params);
+
+
+//….
+
         /**hgjghj*//*
         Toast.makeText(getBaseContext(),"onCreate", Toast.LENGTH_LONG).show();
         mView = new HUDView(this);

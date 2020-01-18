@@ -15,7 +15,6 @@ import android.os.IBinder
 import android.speech.tts.TextToSpeech
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.view.KeyEvent
 import android.widget.Toast
 
 import androidx.core.app.NotificationCompat
@@ -26,6 +25,16 @@ import java.util.Locale
 
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import com.example.android.trackmysleepquality.App.CHANNEL_ID
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.R.attr.name
+import android.graphics.PixelFormat
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.R.attr.name
+import android.os.Build
+import android.view.*
+
 
 class PlayerService : Service(), OnAudioVolumeChangedListener {
     private var mediaSession: MediaSessionCompat? = null
@@ -46,12 +55,6 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
 
     }
 
-    fun construct() {
-
-
-        // aktualismondat[aktualismondatindex]
-    }
-
     var kozepsoduplakattelozoido = 0L
     fun playpause() {
 
@@ -63,8 +66,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
 
             } else {
 
-                myTts.speak( mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
-
+                myTts.speak(mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
 
 
             }
@@ -83,7 +85,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
                 myTts.stop()
                 myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
 
-                bongeszoallapot=false
+                bongeszoallapot = false
             } else {
                 var aktualisfejezetszoveg = aktualisfejezetindex + 1
                 var fejezetszamaszoveg = fejezetekszama + 1
@@ -91,11 +93,11 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
                 myTts.speak("Closing" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
 
 
-                bongeszoallapot=true
+                bongeszoallapot = true
             }
 
 
-           // myTts.speak("change mod", TextToSpeech.QUEUE_FLUSH, null)
+            // myTts.speak("change mod", TextToSpeech.QUEUE_FLUSH, null)
 
 
         }
@@ -149,7 +151,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
             if (aktualismondatindex > 0) {
                 aktualismondatindex--
 
-                myTts.speak( mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak(mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             } else {
                 var aktualismondatszoveg = aktualismondatindex + 1
                 var mondatokszamaszoveg = mondatokszama + 1
@@ -213,9 +215,59 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
         internal val service: PlayerService
             get() = this@PlayerService
     }
-
     override fun onCreate() {
         super.onCreate()
+
+        //Inflate the chat head layout we created
+      var mChatHeadView = LayoutInflater.from(this).inflate(R.layout.layout_chat_head, null);
+
+
+       //Add the view to the window.
+       var params : WindowManager.LayoutParams  =  WindowManager.LayoutParams(
+               WindowManager.LayoutParams.WRAP_CONTENT,
+               WindowManager.LayoutParams.WRAP_CONTENT,
+               WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+               WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+               PixelFormat.TRANSLUCENT);
+
+       //Specify the chat head position
+//Initially view will be added to top-left corner
+       params.gravity = Gravity.TOP
+       params.x = 0;
+       params.y = 100;
+
+       //Add the view to the window
+        val mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+       mWindowManager.addView(mChatHeadView, params);
+
+
+
+
+
+        /*
+        var mView = HUDView(this)
+
+        var LAYOUT_FLAG: Int
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
+        }
+
+
+        val params = WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                LAYOUT_FLAG,
+                0,
+                //              WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                //                      | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                PixelFormat.TRANSLUCENT)
+        params.gravity = Gravity.RIGHT or Gravity.TOP
+        params.title = "Load Average"
+        val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        wm.addView(mView, params)
+*/
 
         myTts = TextToSpeech(applicationContext, TextToSpeech.OnInitListener { status ->
             if (status != TextToSpeech.ERROR) {
@@ -260,9 +312,9 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
                 fejezetekszama = fejezetekszama + 1
             }
 
-           // System.out.println("mrkfejezetekszama" + fejezetekszama)
-           // System.out.println("mrkmondatokszama" + mondatokszama)
-          //  System.out.println("mrk1.mondat" + mondatok[0])
+            // System.out.println("mrkfejezetekszama" + fejezetekszama)
+            // System.out.println("mrkmondatokszama" + mondatokszama)
+            //  System.out.println("mrk1.mondat" + mondatok[0])
 
             //  Toast.makeText(getApplicationContext(), ttsEngineMrk.cim, Toast.LENGTH_SHORT).show();
 
@@ -313,7 +365,8 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
     override fun onDestroy() {
         super.onDestroy()
         Toast.makeText(applicationContext, "vege", Toast.LENGTH_SHORT).show()
-
+        Toast.makeText(getBaseContext(), "onDestroy", Toast.LENGTH_LONG).show();
+        //if (mChatHeadView != null) mWindowManager.removeView(mChatHeadView)
         // mediaSession!!.release()
     }
 /*

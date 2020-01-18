@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.android.trackmysleepquality">
-<uses-permission
-    android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -14,16 +15,47 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".PhoneActivity">
+
+            <intent-filter>
+
+                <!-- Handle links from other applications -->
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.DIAL" />
+                <!-- Populate the system chooser -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- Handle links in browsers -->
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tel" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DIAL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+
+
+        </activity>
+        <activity android:name=".Dialer" >
+
+
+
+
+        </activity>
+
 
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ttsprogram"
-            android:label="Text to Speech Player"/>
+            android:label="Text to Speech Player" />
         <activity
             android:name=".ttsbetoltes"
             android:label="@string/title_activity_ttsbetoltes">
@@ -31,16 +63,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.trackmysleepquality.ttsprogram" />
         </activity>
-        <service android:name=".NavigationAccessibilityService"
+
+        <service
+            android:name=".NavigationAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
-            <meta-data android:name="android.accessibilityservice"
+
+            <meta-data
+                android:name="android.accessibilityservice"
                 android:resource="@xml/accessibilityservice" />
         </service>
         <service
             android:name=".PlayerService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".ChatHeadService"
             android:enabled="true"
             android:exported="true" />
 

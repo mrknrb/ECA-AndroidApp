@@ -23,13 +23,13 @@ import android.view.KeyEvent.KEYCODE_VOLUME_DOWN
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.view.KeyEvent
-import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.app.ActivityCompat.requestPermissions
 import android.Manifest.permission
 import android.Manifest.permission.CALL_PHONE
 import android.Manifest.permission.READ_PHONE_STATE
+import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
@@ -38,43 +38,66 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.provider.Settings
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.app.ActivityCompat.startActivityForResult
+import android.os.Build
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.net.Uri
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.telecom.TelecomManager
+import android.widget.TextView
 
 
 class MainActivity : AppCompatActivity() {
 
+
+
+
+   /*
     fun navigation(view: View){
-        startActivity( Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
-
+        startService(Intent(this@MainActivity, ChatHeadService::class.java))
     }
-
+*/
 
     fun ttsopen(view: View) {
         val intent = Intent(this, ttsprogram::class.java)
         startActivity(intent)
     }
-    private val PERMISSION_REQUEST_READ_PHONE_STATE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED || checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
-                val permissions = arrayOf<String>(Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE)
-                requestPermissions(permissions, PERMISSION_REQUEST_READ_PHONE_STATE)
-            }
-        }
-    }
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            PERMISSION_REQUEST_READ_PHONE_STATE -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission granted: $PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Permission NOT granted: $PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
-                }
 
-                return
-            }
+
+        if (getSystemService(TelecomManager::class.java).defaultDialerPackage != packageName) {
+            Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
+                    .putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, packageName)
+                    .let(::startActivity)
         }
+
+
+
+        findViewById<TextView>(R.id.textView6).setOnClickListener(View.OnClickListener {
+           // startService(Intent(this@MainActivity, ChatHeadService::class.java))
+            val serviceIntent = Intent(this, ChatHeadService::class.java)
+            // serviceIntent.putExtra("inputExtra", input)
+            ContextCompat.startForegroundService(this, serviceIntent)
+            finish()
+        })
+
+
+
+
+
     }
+
 
 }
