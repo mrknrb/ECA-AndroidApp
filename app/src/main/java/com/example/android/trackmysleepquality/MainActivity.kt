@@ -77,12 +77,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        if (getSystemService(TelecomManager::class.java).defaultDialerPackage != packageName) {
-            Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
-                    .putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, packageName)
-                    .let(::startActivity)
-        }
-
+        findViewById<TextView>(R.id.callingmethod).setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, DialerActivity::class.java)
+            startActivity(intent)
+        })
 
 
         findViewById<TextView>(R.id.textView6).setOnClickListener(View.OnClickListener {

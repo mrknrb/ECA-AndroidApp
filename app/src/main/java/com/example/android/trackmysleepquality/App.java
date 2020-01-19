@@ -5,6 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
+import timber.log.Timber;
+
 
 public class App extends Application {
     public static final String CHANNEL_ID = "exampleServiceChannel";
@@ -12,8 +14,9 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         createNotificationChannel();
+
+        Timber.plant(new Timber.DebugTree());
     }
 
     private void createNotificationChannel() {
