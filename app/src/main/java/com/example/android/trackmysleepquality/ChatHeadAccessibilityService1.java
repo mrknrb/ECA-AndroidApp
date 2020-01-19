@@ -1,5 +1,6 @@
 package com.example.android.trackmysleepquality;
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,15 +20,20 @@ import androidx.core.app.NotificationCompat;
 
 import static com.example.android.trackmysleepquality.App.CHANNEL_ID;
 
-public class ChatHeadService extends Service {
+public class ChatHeadAccessibilityService1 extends AccessibilityService {
 
     private WindowManager mWindowManager;
     private View mChatHeadView;
 
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
+
+    }
+
+    @Override
+    public void onInterrupt() {
+
     }
 
     @Override
@@ -64,7 +71,7 @@ public class ChatHeadService extends Service {
                 PixelFormat.TRANSLUCENT);
 
         //Specify the chat head position
-        params.gravity = Gravity.TOP | Gravity.LEFT;        //Initially view will be added to top-left corner
+        params.gravity = Gravity.TOP | Gravity.CENTER;        //Initially view will be added to top-left corner
         params.x = 0;
         params.y = 100;
 
@@ -73,7 +80,7 @@ public class ChatHeadService extends Service {
         mWindowManager.addView(mChatHeadView, params);
 /*
         //Set the close button.
-        ImageView closeButton = (ImageView) mChatHeadView.findViewById(R.id.);
+        ImageView closeButton = (ImageView) mChatHeadView.findViewById(R.id.kurzor);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +119,7 @@ public class ChatHeadService extends Service {
                         //to identify if the user clicked the view or not.
                         if (lastAction == MotionEvent.ACTION_DOWN) {
                             //Open the chat conversation click.
-                            Intent intent = new Intent(ChatHeadService.this, MainActivity.class);
+                            Intent intent = new Intent(ChatHeadAccessibilityService1.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
 

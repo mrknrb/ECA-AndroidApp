@@ -104,18 +104,16 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                 System.out.println("mrk" + mondat)
                 mondatokszama = mondatokszama + 1
             }
-            var aktualisfejezetszoveg = aktualisfejezetindex + 1
-            var fejezetszamaszoveg = fejezetekszama + 1
             myTts.stop()
-           // myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
-            myTts.speak("Opening file", TextToSpeech.QUEUE_FLUSH, null)
+           // myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+            myTts.speak("Opening file Opening file Opening file", TextToSpeech.QUEUE_FLUSH, null)
             bongeszoallapot = false
         } else {
             var aktualisfejezetszoveg = aktualisfejezetindex + 1
             var fejezetszamaszoveg = fejezetekszama + 1
             myTts.stop()
-           // myTts.speak("Closing" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
-            myTts.speak("Closing file", TextToSpeech.QUEUE_FLUSH, null)
+           // myTts.speak("Closing" + aktualisfejezetszoveg.toString() + "of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+            myTts.speak("Closing file Closing file Closing file", TextToSpeech.QUEUE_FLUSH, null)
 
             bongeszoallapot = true
         }
@@ -126,9 +124,11 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         var kozepsoduplakattjelenido = System.currentTimeMillis()
         if ((kozepsoduplakattjelenido - kozepsoduplakattelozoido) > 800) {
             if (bongeszoallapot) {
-                myTts.speak((aktualisfejezetindex + 1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+
+                myTts.speak((aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+
             } else {
-                myTts.speak((aktualismondatindex+1).toString() +"Out of"+(mondatokszama+1)+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak((aktualismondatindex+1).toString() +"of"+(mondatokszama+1).toString().plus(",")+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         } else {
             valtofunction()
@@ -141,16 +141,17 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
             if (aktualisfejezetindex < fejezetekszama) {
                 aktualisfejezetindex++
-                myTts.speak((aktualisfejezetindex + 1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak((aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+
             } else {
-                myTts.speak("Last Part:" + (aktualisfejezetindex+1).toString() + "Out of" + (fejezetekszama+1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak("Last Part:" + (aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         } else {
             if (aktualismondatindex < mondatokszama) {
                 aktualismondatindex++
-                myTts.speak((aktualismondatindex+1).toString() +"Out of"+(mondatokszama+1)+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak((aktualismondatindex+1).toString() +"of"+(mondatokszama+1).toString().plus(",")+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                myTts.speak("Last Sentence:" + (aktualismondatindex+1).toString() + "Out of" + (mondatokszama+1).toString() + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak("Last Sentence:" + (aktualismondatindex+1).toString() + "of" + (mondatokszama+1).toString().plus(",") + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         }
 
@@ -162,16 +163,16 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             if (aktualisfejezetindex > 0) {
                 aktualisfejezetindex--
 
-                myTts.speak((aktualisfejezetindex + 1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak((aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                myTts.speak("First Part:" + (aktualisfejezetindex+1).toString() + "Out of" + (fejezetekszama+1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak("First Part:" + (aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
  }
         } else {
             if (aktualismondatindex > 0) {
                 aktualismondatindex--
-                myTts.speak((aktualismondatindex+1).toString() +"Out of"+(mondatokszama+1)+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak((aktualismondatindex+1).toString() +"of"+(mondatokszama+1).toString().plus(",")+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                myTts.speak("First Sentence:" + (aktualismondatindex+1).toString() + "Out of" + (mondatokszama+1).toString() + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak("First Sentence:" + (aktualismondatindex+1).toString() + "of" + (mondatokszama+1).toString().plus(",") + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         }
     }
@@ -252,12 +253,16 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 */
         phoneStateListener = object : PhoneStateListener() {
             override fun onCallStateChanged(state: Int, incomingNumber: String) {
+
+                requestAudioFocus()
+                myTts.speak("Opening file Opening file Opening file", TextToSpeech.QUEUE_FLUSH, null)
+
                 when (state) {
 
                     //if at least one call exists or the phone is ringing
                     //pause the MediaPlayer
-                    TelephonyManager.CALL_STATE_OFFHOOK,                    TelephonyManager.CALL_STATE_RINGING -> {
-
+                    TelephonyManager.CALL_STATE_OFFHOOK,TelephonyManager.CALL_STATE_RINGING -> {
+                        requestAudioFocus()
                         Toast.makeText(applicationContext, "1", Toast.LENGTH_SHORT).show()
                    // requestAudioFocus()
                         // mMediaPlayer2.start()
@@ -268,8 +273,8 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                        // mMediaPlayer2.start()
                         //myTts.speak("bdfb gbdfgbdfgb dbgfbdfgbd dfgbdfgbd", TextToSpeech.QUEUE_FLUSH, null)
                         Toast.makeText(applicationContext, "2", Toast.LENGTH_SHORT).show()
+                        requestAudioFocus()
                     }
-
 
 
                 }
