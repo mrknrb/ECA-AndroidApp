@@ -34,13 +34,18 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.R.attr.name
 import android.os.Build
 import android.view.*
+import android.telephony.TelephonyManager
+import android.telephony.PhoneStateListener
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.R.attr.name
+import com.example.android.trackmysleepquality.OngoingCall.state
 
 
-class PlayerService : Service(), OnAudioVolumeChangedListener {
+class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAudioFocusChangeListener {
     private var mediaSession: MediaSessionCompat? = null
     internal lateinit var myTts: TextToSpeech
-
-
+    var phoneStateListener: PhoneStateListener? = null
     internal var fejezetekszama: Int = -1
     internal var mondatokszama: Int = -1
     internal var aktualisfejezetindex = 0
@@ -49,86 +54,103 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
     internal lateinit var mondatok: List<String>
     internal var bongeszoallapot = true
     internal var cim: String = ""
+    lateinit var audioManager: AudioManager
     var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
     override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
-        Toast.makeText(applicationContext, "play", Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, "volume changed", Toast.LENGTH_SHORT).show()
 
     }
 
-    var kozepsoduplakattelozoido = 0L
-    fun playpause() {
+    override fun onAudioFocusChange(focusState: Int) {
+        //Invoked when the audio focus of the system is updated.
+        /* val mMediaPlayer: MediaPlayer
+         mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
+         mMediaPlayer.setOnCompletionListener { mMediaPlayer.release() }*/
 
+        when (focusState) {
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                /*todo ha csak simán elveszíti a fókuszt, majd visszaszerzi, ne nyissa meg*/
+                valtofunction()
+            }
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                requestAudioFocus()
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                requestAudioFocus()
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                requestAudioFocus()
+            }
+        }
+    }
+    private fun requestAudioFocus(): Boolean {
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            //Focus gained
+            return true
+        }
+        //Could not gain focus
+        return false
+    }
+    private fun removeAudioFocus(): Boolean {
+        return (AudioManager.AUDIOFOCUS_REQUEST_GRANTED === audioManager.abandonAudioFocus(this))
+    }
+    var kozepsoduplakattelozoido = 0L
+    fun valtofunction() {
+        if (bongeszoallapot) {
+            mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(cim, fejezetek[aktualisfejezetindex])
+            for (mondat in mondatok) {
+                System.out.println("mrk" + mondat)
+                mondatokszama = mondatokszama + 1
+            }
+            var aktualisfejezetszoveg = aktualisfejezetindex + 1
+            var fejezetszamaszoveg = fejezetekszama + 1
+            myTts.stop()
+           // myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+            myTts.speak("Opening file", TextToSpeech.QUEUE_FLUSH, null)
+            bongeszoallapot = false
+        } else {
+            var aktualisfejezetszoveg = aktualisfejezetindex + 1
+            var fejezetszamaszoveg = fejezetekszama + 1
+            myTts.stop()
+           // myTts.speak("Closing" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+            myTts.speak("Closing file", TextToSpeech.QUEUE_FLUSH, null)
+
+            bongeszoallapot = true
+        }
+
+    }
+
+    fun playpause() {
         var kozepsoduplakattjelenido = System.currentTimeMillis()
         if ((kozepsoduplakattjelenido - kozepsoduplakattelozoido) > 800) {
             if (bongeszoallapot) {
-
                 myTts.speak((aktualisfejezetindex + 1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
-
             } else {
-
-                myTts.speak(mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
-
-
+                myTts.speak((aktualismondatindex+1).toString() +"Out of"+(mondatokszama+1)+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             }
-
         } else {
-            if (bongeszoallapot) {
-                mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(cim, fejezetek[aktualisfejezetindex])
-                for (mondat in mondatok) {
-                    System.out.println("mrk" + mondat)
-                    mondatokszama = mondatokszama + 1
-                }
-
-
-                var aktualisfejezetszoveg = aktualisfejezetindex + 1
-                var fejezetszamaszoveg = fejezetekszama + 1
-                myTts.stop()
-                myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
-
-                bongeszoallapot = false
-            } else {
-                var aktualisfejezetszoveg = aktualisfejezetindex + 1
-                var fejezetszamaszoveg = fejezetekszama + 1
-                myTts.stop()
-                myTts.speak("Closing" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
-
-
-                bongeszoallapot = true
-            }
-
-
-            // myTts.speak("change mod", TextToSpeech.QUEUE_FLUSH, null)
-
-
+            valtofunction()
         }
         kozepsoduplakattelozoido = System.currentTimeMillis()
-
-
     }
-
     fun next() {
 
         if (bongeszoallapot) {
+
             if (aktualisfejezetindex < fejezetekszama) {
                 aktualisfejezetindex++
-
                 myTts.speak((aktualisfejezetindex + 1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                var aktualisfejezetszoveg = aktualisfejezetindex + 1
-                var fejezetszamaszoveg = fejezetekszama + 1
-
-                myTts.speak("Last Part:" + aktualisfejezetszoveg.toString() + "Out of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak("Last Part:" + (aktualisfejezetindex+1).toString() + "Out of" + (fejezetekszama+1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         } else {
             if (aktualismondatindex < mondatokszama) {
                 aktualismondatindex++
-
-                myTts.speak(mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak((aktualismondatindex+1).toString() +"Out of"+(mondatokszama+1)+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                var aktualismondatszoveg = aktualismondatindex + 1
-                var mondatokszamaszoveg = mondatokszama + 1
-
-                myTts.speak("Last Sentence:" + aktualismondatszoveg.toString() + "Out of" + mondatokszamaszoveg.toString() + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak("Last Sentence:" + (aktualismondatindex+1).toString() + "Out of" + (mondatokszama+1).toString() + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         }
 
@@ -142,21 +164,14 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
 
                 myTts.speak((aktualisfejezetindex + 1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                var aktualisfejezetszoveg = aktualisfejezetindex + 1
-                var fejezetszamaszoveg = fejezetekszama + 1
-
-                myTts.speak("First Part:" + aktualisfejezetszoveg + "Out of" + fejezetszamaszoveg + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
-            }
+                myTts.speak("First Part:" + (aktualisfejezetindex+1).toString() + "Out of" + (fejezetekszama+1).toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+ }
         } else {
             if (aktualismondatindex > 0) {
                 aktualismondatindex--
-
-                myTts.speak(mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak((aktualismondatindex+1).toString() +"Out of"+(mondatokszama+1)+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                var aktualismondatszoveg = aktualismondatindex + 1
-                var mondatokszamaszoveg = mondatokszama + 1
-
-                myTts.speak("First Sentence:" + aktualismondatszoveg.toString() + "Out of" + mondatokszamaszoveg.toString() + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.speak("First Sentence:" + (aktualismondatindex+1).toString() + "Out of" + (mondatokszama+1).toString() + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
             }
         }
     }
@@ -199,8 +214,17 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
                             Toast.makeText(applicationContext, "pause", Toast.LENGTH_SHORT).show()
                             playpause()
                         }
-                        KeyEvent.KEYCODE_MEDIA_NEXT -> next()
-                        KeyEvent.KEYCODE_MEDIA_PREVIOUS -> previous()
+                        KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                            next()
+                            Toast.makeText(applicationContext, "next", Toast.LENGTH_SHORT).show()
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                            previous()
+                            Toast.makeText(applicationContext, "prev", Toast.LENGTH_SHORT).show()
+                        }
+
+
                     }
                     startService(Intent(applicationContext, PlayerService::class.java))
                     return true
@@ -215,35 +239,54 @@ class PlayerService : Service(), OnAudioVolumeChangedListener {
         internal val service: PlayerService
             get() = this@PlayerService
     }
+
+    private fun callStateListener() {
+        // Get the telephony manager
+        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        //Starting listening for PhoneState changes
+        /*
+        requestAudioFocus()
+        val mMediaPlayer2: MediaPlayer
+        mMediaPlayer2 = MediaPlayer.create(applicationContext, R.raw.silent_sound)
+        mMediaPlayer2.setOnCompletionListener { mMediaPlayer2.release() }
+*/
+        phoneStateListener = object : PhoneStateListener() {
+            override fun onCallStateChanged(state: Int, incomingNumber: String) {
+                when (state) {
+
+                    //if at least one call exists or the phone is ringing
+                    //pause the MediaPlayer
+                    TelephonyManager.CALL_STATE_OFFHOOK,                    TelephonyManager.CALL_STATE_RINGING -> {
+
+                        Toast.makeText(applicationContext, "1", Toast.LENGTH_SHORT).show()
+                   // requestAudioFocus()
+                        // mMediaPlayer2.start()
+                    }
+                    TelephonyManager.CALL_STATE_IDLE -> {
+                        // Phone idle. Start playing.
+                     // requestAudioFocus()
+                       // mMediaPlayer2.start()
+                        //myTts.speak("bdfb gbdfgbdfgb dbgfbdfgbd dfgbdfgbd", TextToSpeech.QUEUE_FLUSH, null)
+                        Toast.makeText(applicationContext, "2", Toast.LENGTH_SHORT).show()
+                    }
+
+
+
+                }
+            }
+        }
+        // Register the listener with the telephony manager
+        // Listen for changes to the device call state.
+        telephonyManager.listen(phoneStateListener,
+                PhoneStateListener.LISTEN_CALL_STATE)
+    }
+
     override fun onCreate() {
         super.onCreate()
 
-        //Inflate the chat head layout we created
-      var mChatHeadView = LayoutInflater.from(this).inflate(R.layout.layout_chat_head, null);
 
-
-       //Add the view to the window.
-       var params : WindowManager.LayoutParams  =  WindowManager.LayoutParams(
-               WindowManager.LayoutParams.WRAP_CONTENT,
-               WindowManager.LayoutParams.WRAP_CONTENT,
-               WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-               WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-               PixelFormat.TRANSLUCENT);
-
-       //Specify the chat head position
-//Initially view will be added to top-left corner
-       params.gravity = Gravity.TOP
-       params.x = 0;
-       params.y = 100;
-
-       //Add the view to the window
-        val mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-       mWindowManager.addView(mChatHeadView, params);
-
-
-
-
-
+        //Handle incoming phone calls
+        callStateListener()
         /*
         var mView = HUDView(this)
 

@@ -30,6 +30,6 @@ object OngoingCall {
     }
 
     fun hangup() {
-      //  call!!.disconnect()
+      call!!.disconnect()
     }
 }
