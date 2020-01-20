@@ -16,7 +16,7 @@ public class RemoteReceiver extends BroadcastReceiver {
             if (event != null && event.getAction() == KeyEvent.ACTION_DOWN) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                        context.startService(new Intent(context, PlayerService.class));
+                        context.startService(new Intent(context, ChatHeadAccessibilityService1.class));
                         break;
                 }
             }

@@ -8,6 +8,8 @@
     android:notificationTimeout="50"
     android:packageNames="foo.bar, foo.baz"
 
+
     android:settingsActivity="foo.bar.TestBackActivity"
    info.flags = "AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS"
+    android:canPerformGestures="true"
     />

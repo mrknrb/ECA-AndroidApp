@@ -116,6 +116,7 @@ System.out.println("mrkstart");
         Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
         System.out.println("mrkstart");
     }
+
     @Override
     public boolean onKeyEvent(KeyEvent event) {
         Toast.makeText(getApplicationContext(), "valamikey", Toast.LENGTH_SHORT).show();

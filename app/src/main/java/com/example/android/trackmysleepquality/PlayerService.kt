@@ -227,7 +227,10 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
 
                     }
-                    startService(Intent(applicationContext, PlayerService::class.java))
+                    /***ez fingom sics, hogy mi*/
+                    startService(Intent(applicationContext, PlayerService::class.java)
+
+                    )
                     return true
                 }
             }
