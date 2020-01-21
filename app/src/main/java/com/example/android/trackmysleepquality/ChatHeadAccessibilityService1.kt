@@ -35,15 +35,20 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.Timer
 import kotlin.concurrent.schedule
-class ChatHeadAccessibilityService1 : AccessibilityService() {
+class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityService.SoftKeyboardController.OnShowModeChangedListener {
     var size = Point()
     private var mWindowManager: WindowManager? = null
     private var mChatHeadView: View? = null
+    private var mKeyBoardView: View? = null
     private var mediaSession: MediaSessionCompat? = null
     lateinit var audioManager: AudioManager
     var dp = convertDpToPixel(1F).toInt()
     var attachedchatheadview=false
-
+    override fun onShowModeChanged(p0: SoftKeyboardController, p1: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this@ChatHeadAccessibilityService1, "keyboard " , Toast.LENGTH_SHORT).show()
+        System.out.println("keyboardmrk")
+    }
     lateinit var mainHandler: Handler
     private val updateTextTask = object : Runnable {
         override fun run() {
@@ -54,7 +59,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
             mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
             mMediaPlayer.setOnCompletionListener { mMediaPlayer.release() }
             mMediaPlayer.start()
-            mainHandler.postDelayed(this, 3000)
+            mainHandler.postDelayed(this, 10000)
         }
     }
     private fun requestAudioFocus(): Boolean {
@@ -94,7 +99,12 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
             layouttype(),
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT)
-
+    val paramskeyboard = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            layouttype(),
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT)
     fun convertDpToPixel(dp: Float): Float {
         val metrics = Resources.getSystem().getDisplayMetrics()
 
@@ -336,22 +346,33 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
 
         mediaSession!!.isActive = true
         //Inflate the chat head layout we created
+
         mChatHeadView = LayoutInflater.from(this).inflate(R.layout.layout_chat_head, null)
-
-        Toast.makeText(this, "Permission granted: \$PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
-
         //Specify the chat head position
         params.gravity = Gravity.TOP or Gravity.LEFT       //Initially view will be added to top-left corner
         params.x = 600
         params.y = 850
 
         //Add the view to the window
-        mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        mWindowManager!!.addView(mChatHeadView, params)
-        attachedchatheadview=true
 
+        mKeyBoardView= LayoutInflater.from(this).inflate(R.layout.layout_keyboard, null)
+        Toast.makeText(this, "Permission granted: \$PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
+        paramskeyboard.gravity= Gravity.CENTER
+        paramskeyboard.horizontalWeight=1F
+        paramskeyboard.horizontalMargin=0F
+
+       // paramskeyboard.x = 50
+    //  paramskeyboard.y = 10
+                mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        mWindowManager!!.addView(mChatHeadView, params)
+        mWindowManager!!.addView(mKeyBoardView, paramskeyboard)
+        attachedchatheadview=true
         var defaultdisplay = mWindowManager!!.defaultDisplay.getSize(size)
 
+/**todo remove es addkeyboard
+        mWindowManager!!.addView(mKeyBoardView,paramskeyboard)
+       mWindowManager!!.removeView(mKeyBoardView)
+        */
 //defaultdisplay.getSize(size)
         /*
         //Set the close button.
