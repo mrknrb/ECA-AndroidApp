@@ -14,6 +14,7 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -77,11 +78,20 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
     }
     val metrics = Resources.getSystem().getDisplayMetrics()
 
+    fun layouttype():Int{
+        var LAYOUT_FLAG=0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
+        }
+        return LAYOUT_FLAG
+    }
     //Add the view to the window.
     val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            layouttype(),
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT)
 
@@ -101,6 +111,9 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        val mMediaPlayer: MediaPlayer
+        mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
+        mMediaPlayer.setOnCompletionListener { mMediaPlayer.release() }
         /*
         Context applicationcontext= getApplicationContext();
         Notification notification = new NotificationCompat.Builder(applicationcontext, CHANNEL_ID)
@@ -112,12 +125,11 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
                 .build();
 
         startForeground(1, notification);
-*/System.out.println("repeat")
+*/
+        System.out.println("repeat")
 
         mainHandler.post(updateTextTask)
-        val mMediaPlayer: MediaPlayer
-        mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
-        mMediaPlayer.setOnCompletionListener { mMediaPlayer.release() }
+
         mMediaPlayer.start()
 
 
@@ -131,7 +143,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
             if (billentyuzetallapot) {
             } else {
                 if(params.y>metrics.heightPixels-25*dp){
-                    scrollGesture(-1F,200F)
+                    scrollGesture(-1F,metrics.heightPixels/3.toFloat())
             }
                else if(params.y>metrics.heightPixels-70*dp){
                     params.y =metrics.heightPixels- dp * 20
@@ -144,7 +156,8 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
             }
         } else {
             if(params.y>metrics.heightPixels-25*dp){
-                scrollGesture(-1F,300F)
+
+                //scrollGesture(-1F,300F)
             }
            else if(params.y>metrics.heightPixels-70*dp){
                 params.y =metrics.heightPixels- dp * 20
@@ -166,7 +179,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
             if (billentyuzetallapot) {
             } else {
                 if(params.y<25*dp){
-                    scrollGesture(+1F,200F)
+                    scrollGesture(+1F,metrics.heightPixels/3.toFloat())
 
                 }else if(params.y<70*dp){
 
@@ -180,7 +193,8 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
             }
         } else {
             if(params.y<25*dp){
-                scrollGesture(+1F,300F)
+                /*todo valami más funkció legyen*/
+               // scrollGesture(+1F,300F)
         }
            else if(params.y<70*dp){
                 params.y = dp * 20
@@ -229,7 +243,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
         // p.lineTo(620F, 850F)
 
         p.moveTo(metrics.widthPixels.toFloat()/2,metrics.heightPixels.toFloat()/2)
-        p.lineTo(metrics.widthPixels.toFloat()/2,minusplus*nagysag*dp+metrics.heightPixels.toFloat()/2)
+        p.lineTo(metrics.widthPixels.toFloat()/2,minusplus*nagysag+metrics.heightPixels.toFloat()/2)
         builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 200L))
         val gesture = builder.build()
         val isDispatched = dispatchGesture(gesture, object : GestureResultCallback() {
