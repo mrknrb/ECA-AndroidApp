@@ -14,7 +14,9 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.*
@@ -23,15 +25,58 @@ import android.widget.ImageView
 import android.widget.Toast
 
 import androidx.core.app.NotificationCompat
+import androidx.recyclerview.widget.RecyclerView
 
 import com.example.android.trackmysleepquality.App.CHANNEL_ID
-
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.*
+import java.util.Timer
+import kotlin.concurrent.schedule
 class ChatHeadAccessibilityService1 : AccessibilityService() {
     var size = Point()
     private var mWindowManager: WindowManager? = null
     private var mChatHeadView: View? = null
     private var mediaSession: MediaSessionCompat? = null
     lateinit var audioManager: AudioManager
+    var dp = convertDpToPixel(1F).toInt()
+    var attachedchatheadview=false
+
+    lateinit var mainHandler: Handler
+    private val updateTextTask = object : Runnable {
+        override fun run() {
+           // Toast.makeText(this@ChatHeadAccessibilityService1, "Repeat? ", Toast.LENGTH_SHORT).show()
+            System.out.println("repeat")
+            requestAudioFocus()
+            val mMediaPlayer: MediaPlayer
+            mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
+            mMediaPlayer.setOnCompletionListener { mMediaPlayer.release() }
+            mMediaPlayer.start()
+            mainHandler.postDelayed(this, 3000)
+        }
+    }
+    private fun requestAudioFocus(): Boolean {
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val result = audioManager.requestAudioFocus(AudioManager.OnAudioFocusChangeListener {  }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            //Focus gained
+            return true
+        }
+        //Could not gain focus
+        return false
+    }
+
+
+    fun updatecursor(params:WindowManager.LayoutParams){
+
+      /**todo bug app:id/chat_head_root} not attached to window manager*/
+      if(attachedchatheadview){
+          mWindowManager!!.updateViewLayout(mChatHeadView, params)
+      }
+    }
+    val metrics = Resources.getSystem().getDisplayMetrics()
+
     //Add the view to the window.
     val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -40,6 +85,12 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT)
 
+    fun convertDpToPixel(dp: Float): Float {
+        val metrics = Resources.getSystem().getDisplayMetrics()
+
+        val px = dp * (metrics.densityDpi / 160f)
+        return Math.round(px).toFloat()
+    }
 
     override fun onAccessibilityEvent(accessibilityEvent: AccessibilityEvent) {
 
@@ -61,67 +112,137 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
                 .build();
 
         startForeground(1, notification);
-*/
+*/System.out.println("repeat")
 
+        mainHandler.post(updateTextTask)
         val mMediaPlayer: MediaPlayer
         mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
         mMediaPlayer.setOnCompletionListener { mMediaPlayer.release() }
         mMediaPlayer.start()
 
 
-
         return super.onStartCommand(intent, flags, startId)
     }
 
-    fun previous(){
-       var initialX = params.x
-       var initialY = params.y
-        params.y=initialY+100
+    var previousduplakattelozoido = 0L
+    fun previous() {
+        var previousduplakattjelenido = System.currentTimeMillis()
+        if ((previousduplakattjelenido - previousduplakattelozoido) > 300) {
+            if (billentyuzetallapot) {
+            } else {
+                if(params.y>metrics.heightPixels-25*dp){
+                    scrollGesture(-1F,200F)
+            }
+               else if(params.y>metrics.heightPixels-70*dp){
+                    params.y =metrics.heightPixels- dp * 20
+                }else{
+                    var initialY = params.y
+                    params.y = initialY + dp * 50
+                    updatecursor(params)
 
-        //Update the layout with new X & Y coordinate
-        mWindowManager!!.updateViewLayout(mChatHeadView, params)
-
+                }
+            }
+        } else {
+            if(params.y>metrics.heightPixels-25*dp){
+                scrollGesture(-1F,300F)
+            }
+           else if(params.y>metrics.heightPixels-70*dp){
+                params.y =metrics.heightPixels- dp * 20
+            }else if(params.y <metrics.heightPixels/4){
+                params.y = metrics.heightPixels/2
+            }else{
+                params.y = metrics.heightPixels-dp * 20
+            }
+            updatecursor(params)
+        }
+        previousduplakattelozoido = System.currentTimeMillis()
     }
 
-    fun next(){
-        var initialX = params.x
-        var initialY = params.y
-        params.y=initialY-100
+    var billentyuzetallapot=false
+    var nextduplakattelozoido = 0L
+    fun next() {
+        var nextduplakattjelenido = System.currentTimeMillis()
+        if ((nextduplakattjelenido - nextduplakattelozoido) > 300) {
+            if (billentyuzetallapot) {
+            } else {
+                if(params.y<25*dp){
+                    scrollGesture(+1F,200F)
 
- Toast.makeText(applicationContext,  size.x.toString()+  size.y.toString(), Toast.LENGTH_SHORT).show()
+                }else if(params.y<70*dp){
 
+                    params.y = dp * 20
 
-
-
-        //Update the layout with new X & Y coordinate
-        mWindowManager!!.updateViewLayout(mChatHeadView, params)
+                }else{
+                    var initialY = params.y
+                    params.y = initialY - dp * 50
+                    updatecursor(params)
+                }
+            }
+        } else {
+            if(params.y<25*dp){
+                scrollGesture(+1F,300F)
+        }
+           else if(params.y<70*dp){
+                params.y = dp * 20
+            }else if(params.y >3*metrics.heightPixels/4){
+                params.y = metrics.heightPixels/2
+            }else{
+                params.y = dp * 20
+            }
+            updatecursor(params)
+        }
+        nextduplakattelozoido = System.currentTimeMillis()
     }
-    fun playpause(){
-        var point=Point(params.x+10,params.y+60)
+
+    fun playpause() {
+        var point = Point(params.x + 10, params.y + 60)
         pressLocation(point)
     }
+
     @TargetApi(24)
     private fun pressLocation(position: Point) {
         val builder = GestureDescription.Builder()
         val p = Path()
-    // p.moveTo(600F , 850F )
-    // p.lineTo(620F, 850F)
+        // p.moveTo(600F , 850F )
+        // p.lineTo(620F, 850F)
 
-      p.moveTo(position.x.toFloat() , position.y.toFloat() )
-      p.lineTo((position.x + 5).toFloat(), (position.y + 5).toFloat())
+        p.moveTo(position.x.toFloat(), position.y.toFloat())
+        p.lineTo((position.x + 5).toFloat(), (position.y + 5).toFloat())
         builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 50L))
         val gesture = builder.build()
-        val isDispatched = dispatchGesture(gesture, object:GestureResultCallback() {
-           override fun onCompleted(gestureDescription:GestureDescription) {
+        val isDispatched = dispatchGesture(gesture, object : GestureResultCallback() {
+            override fun onCompleted(gestureDescription: GestureDescription) {
                 super.onCompleted(gestureDescription)
             }
-           override fun onCancelled(gestureDescription:GestureDescription) {
+
+            override fun onCancelled(gestureDescription: GestureDescription) {
                 super.onCancelled(gestureDescription)
             }
         }, null)
-       // Toast.makeText(this@ChatHeadAccessibilityService1, "Was it dispatched? " + isDispatched, Toast.LENGTH_SHORT).show()
+        // Toast.makeText(this@ChatHeadAccessibilityService1, "Was it dispatched? " + isDispatched, Toast.LENGTH_SHORT).show()
     }
+    @TargetApi(24)
+    private fun scrollGesture(minusplus:Float,nagysag:Float) {
+        val builder = GestureDescription.Builder()
+        val p = Path()
+        // p.moveTo(600F , 850F )
+        // p.lineTo(620F, 850F)
 
+        p.moveTo(metrics.widthPixels.toFloat()/2,metrics.heightPixels.toFloat()/2)
+        p.lineTo(metrics.widthPixels.toFloat()/2,minusplus*nagysag*dp+metrics.heightPixels.toFloat()/2)
+        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 200L))
+        val gesture = builder.build()
+        val isDispatched = dispatchGesture(gesture, object : GestureResultCallback() {
+            override fun onCompleted(gestureDescription: GestureDescription) {
+                super.onCompleted(gestureDescription)
+            }
+
+            override fun onCancelled(gestureDescription: GestureDescription) {
+                super.onCancelled(gestureDescription)
+            }
+        }, null)
+        // Toast.makeText(this@ChatHeadAccessibilityService1, "Was it dispatched? " + isDispatched, Toast.LENGTH_SHORT).show()
+    }
     private val mMediaSessionCallback = object : MediaSessionCompat.Callback() {
         override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
             val intentAction = mediaButtonEvent.action
@@ -136,7 +257,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
                     when (keycode) {
                         // Do what you want in here
                         KeyEvent.KEYCODE_MEDIA_PLAY -> {
-                           // Toast.makeText(applicationContext, "play", Toast.LENGTH_SHORT).show()
+                            // Toast.makeText(applicationContext, "play", Toast.LENGTH_SHORT).show()
 
                             playpause()
                             /*
@@ -154,16 +275,16 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
                             // myTts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                         }
                         KeyEvent.KEYCODE_MEDIA_PAUSE -> {
-                           // Toast.makeText(applicationContext, "pause", Toast.LENGTH_SHORT).show()
+                            // Toast.makeText(applicationContext, "pause", Toast.LENGTH_SHORT).show()
                             playpause()
                         }
                         KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                           // Toast.makeText(applicationContext, "next", Toast.LENGTH_SHORT).show()
+                            // Toast.makeText(applicationContext, "next", Toast.LENGTH_SHORT).show()
                             next()
                         }
 
                         KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                           // Toast.makeText(applicationContext, "prev", Toast.LENGTH_SHORT).show()
+                            // Toast.makeText(applicationContext, "prev", Toast.LENGTH_SHORT).show()
                             previous()
                         }
 
@@ -177,7 +298,6 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
         }
 
     }
-
 
 
     override fun onCreate() {
@@ -203,6 +323,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
         mediaSession!!.isActive = true
         //Inflate the chat head layout we created
         mChatHeadView = LayoutInflater.from(this).inflate(R.layout.layout_chat_head, null)
+
         Toast.makeText(this, "Permission granted: \$PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
 
         //Specify the chat head position
@@ -213,8 +334,9 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
         //Add the view to the window
         mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         mWindowManager!!.addView(mChatHeadView, params)
+        attachedchatheadview=true
 
-      var defaultdisplay= mWindowManager!!.defaultDisplay.getSize(size)
+        var defaultdisplay = mWindowManager!!.defaultDisplay.getSize(size)
 
 //defaultdisplay.getSize(size)
         /*
@@ -291,6 +413,8 @@ class ChatHeadAccessibilityService1 : AccessibilityService() {
                 return false
             }
         })
+        mainHandler = Handler(Looper.getMainLooper())
+        mainHandler.post(updateTextTask)
     }
 
     override fun onDestroy() {

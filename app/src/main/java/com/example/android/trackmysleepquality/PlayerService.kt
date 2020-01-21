@@ -70,7 +70,8 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         when (focusState) {
             AudioManager.AUDIOFOCUS_GAIN -> {
                 /*todo ha csak simán elveszíti a fókuszt, majd visszaszerzi, ne nyissa meg*/
-                valtofunction()
+                /*todo az audiofocust stabilan, minden esetben szerezze vissza*/
+                //valtofunction()
             }
             AudioManager.AUDIOFOCUS_LOSS -> {
                 requestAudioFocus()
