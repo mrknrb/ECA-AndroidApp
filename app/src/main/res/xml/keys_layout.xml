@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="10%p"
+    android:horizontalGap="0px"
+    android:verticalGap="0px"
+    android:keyHeight="60dp"
+    android:keyTextColor="@color/colorAccent"
+    android:keyBackground="@color/colorPrimaryDark"
+    >
+    <Row>
+        <Key
+            android:id="@+id/key0"
+            android:codes="48"
+            android:keyEdgeFlags="left"
+            android:keyLabel="0" />
+        <Key
+            android:id="@+id/key1"
+            android:codes="49"
+            android:keyLabel="1" />
+        <Key
+            android:id="@+id/key2"
+            android:codes="50"
+            android:keyLabel="2" />
+        <Key
+            android:id="@+id/key3"
+            android:codes="51"
+            android:keyLabel="3" />
+        <Key
+            android:id="@+id/key4"
+            android:codes="52"
+            android:keyLabel="4" />
+        <Key
+            android:id="@+id/key5"
+            android:codes="53"
+            android:keyLabel="5" />
+        <Key
+            android:id="@+id/key6"
+            android:codes="54"
+            android:keyLabel="6" />
+        <Key
+            android:id="@+id/key7"
+            android:codes="55"
+            android:keyLabel="7" />
+        <Key
+            android:id="@+id/key8"
+            android:codes="56"
+            android:keyLabel="8" />
+        <Key
+            android:id="@+id/key9"
+            android:codes="57"
+            android:isRepeatable="true"
+            android:keyEdgeFlags="right"
+            android:keyLabel="9" />
+
+    </Row>
+    <Row>
+        <Key
+            android:id="@+id/key10"
+            android:codes="113"
+            android:keyEdgeFlags="left"
+            android:keyLabel="q" />
+        <Key
+            android:id="@+id/key11"
+            android:codes="119"
+            android:keyLabel="w" />
+        <Key
+            android:id="@+id/key12"
+            android:codes="101"
+            android:keyLabel="e" />
+        <Key
+            android:id="@+id/key13"
+            android:codes="114"
+            android:keyLabel="r" />
+        <Key
+            android:id="@+id/key14"
+            android:codes="116"
+            android:keyLabel="t" />
+        <Key
+            android:id="@+id/key15"
+            android:codes="121"
+            android:keyLabel="y" />
+        <Key
+            android:id="@+id/key16"
+            android:codes="117"
+            android:keyLabel="u" />
+        <Key
+            android:id="@+id/key17"
+            android:codes="105"
+            android:keyLabel="i" />
+        <Key
+            android:id="@+id/key18"
+            android:codes="111"
+            android:keyLabel="o" />
+        <Key
+            android:id="@+id/key19"
+            android:codes="112"
+            android:keyEdgeFlags="right"
+            android:keyLabel="p" />
+
+    </Row>
+    <Row>
+        <Key
+            android:id="@+id/key20"
+            android:codes="97"
+            android:keyEdgeFlags="left"
+            android:keyLabel="a" />
+        <Key
+            android:id="@+id/key21"
+            android:codes="115"
+            android:keyLabel="s" />
+        <Key
+            android:id="@+id/key22"
+            android:codes="100"
+            android:keyLabel="d" />
+        <Key
+            android:id="@+id/key23"
+            android:codes="102"
+            android:keyLabel="f" />
+        <Key
+            android:id="@+id/key24"
+            android:codes="103"
+            android:keyLabel="g" />
+        <Key
+            android:id="@+id/key25"
+            android:codes="104"
+            android:keyLabel="h" />
+        <Key
+            android:id="@+id/key26"
+            android:codes="106"
+            android:keyLabel="j" />
+        <Key
+            android:id="@+id/key27"
+            android:codes="107"
+            android:keyLabel="k" />
+        <Key
+            android:id="@+id/key28"
+            android:codes="108"
+            android:keyLabel="l" />
+        <Key
+            android:id="@+id/key29"
+            android:codes="-5"
+            android:keyEdgeFlags="right"
+            android:keyLabel="DEL" />
+    </Row>
+    <Row>
+        <Key
+            android:id="@+id/key30"
+            android:codes="122"
+            android:keyEdgeFlags="left"
+            android:keyLabel="z" />
+        <Key
+            android:id="@+id/key31"
+            android:codes="120"
+            android:keyLabel="x" />
+        <Key
+            android:id="@+id/key32"
+            android:codes="99"
+            android:keyLabel="c" />
+        <Key
+            android:id="@+id/key33"
+            android:codes="118"
+            android:keyLabel="v" />
+        <Key
+            android:id="@+id/key34"
+            android:codes="98"
+            android:keyLabel="b" />
+        <Key
+            android:id="@+id/key35"
+            android:codes="110"
+            android:keyLabel="n" />
+        <Key
+            android:id="@+id/key36"
+            android:codes="109"
+            android:keyLabel="m" />
+        <Key
+            android:id="@+id/key37"
+            android:codes="46"
+            android:keyLabel="." />
+        <Key
+            android:id="@+id/key38"
+            android:codes="63"
+            android:keyLabel="\?" />
+        <Key
+            android:id="@+id/key39"
+            android:codes="33"
+            android:keyEdgeFlags="right"
+            android:keyLabel="!" />
+    </Row>
+    <Row android:rowEdgeFlags="bottom">
+        <Key
+            android:id="@+id/key40"
+            android:codes="32"
+            android:isRepeatable="true"
+            android:keyWidth="80%p"
+            android:keyLabel="SPACE" />
+        <Key
+            android:id="@+id/key41"
+            android:codes="-4"
+            android:keyWidth="20%p"
+            android:keyBackground="@color/colorPrimary"
+            android:keyEdgeFlags="right"
+            android:keyLabel="DONE" />
+    </Row>
+</Keyboard>
