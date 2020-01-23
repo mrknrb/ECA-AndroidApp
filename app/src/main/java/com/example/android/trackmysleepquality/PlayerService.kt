@@ -71,20 +71,24 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             AudioManager.AUDIOFOCUS_GAIN -> {
                 /*todo ha csak simán elveszíti a fókuszt, majd visszaszerzi, ne nyissa meg*/
                 /*todo az audiofocust stabilan, minden esetben szerezze vissza*/
-                //valtofunction()
+               // valtofunction()
             }
             AudioManager.AUDIOFOCUS_LOSS -> {
-                requestAudioFocus()
+                //requestAudioFocus()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                requestAudioFocus()
+               // requestAudioFocus()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                requestAudioFocus()
+              //  requestAudioFocus()
             }
         }
     }
     private fun requestAudioFocus(): Boolean {
+        val mMediaPlayer: MediaPlayer
+        mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
+        mMediaPlayer.setOnCompletionListener { mMediaPlayer.release() }
+        mMediaPlayer.start()
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -92,6 +96,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             return true
         }
         //Could not gain focus
+       // requestAudioFocus()
         return false
     }
     private fun removeAudioFocus(): Boolean {
@@ -249,26 +254,29 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         // Get the telephony manager
         val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         //Starting listening for PhoneState changes
-        /*
+
         requestAudioFocus()
-        val mMediaPlayer2: MediaPlayer
+         /*val mMediaPlayer2: MediaPlayer
         mMediaPlayer2 = MediaPlayer.create(applicationContext, R.raw.silent_sound)
         mMediaPlayer2.setOnCompletionListener { mMediaPlayer2.release() }
 */
         phoneStateListener = object : PhoneStateListener() {
             override fun onCallStateChanged(state: Int, incomingNumber: String) {
 
-                requestAudioFocus()
-                myTts.speak("Opening file Opening file Opening file", TextToSpeech.QUEUE_FLUSH, null)
+               // requestAudioFocus()
+               // myTts.speak("Opening file Opening file Opening file", TextToSpeech.QUEUE_FLUSH, null)
 
                 when (state) {
 
                     //if at least one call exists or the phone is ringing
                     //pause the MediaPlayer
                     TelephonyManager.CALL_STATE_OFFHOOK,TelephonyManager.CALL_STATE_RINGING -> {
-                        requestAudioFocus()
+
                         Toast.makeText(applicationContext, "1", Toast.LENGTH_SHORT).show()
+                        valtofunction()
+                        requestAudioFocus()
                    // requestAudioFocus()
+
                         // mMediaPlayer2.start()
                     }
                     TelephonyManager.CALL_STATE_IDLE -> {
@@ -277,7 +285,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                        // mMediaPlayer2.start()
                         //myTts.speak("bdfb gbdfgbdfgb dbgfbdfgbd dfgbdfgbd", TextToSpeech.QUEUE_FLUSH, null)
                         Toast.makeText(applicationContext, "2", Toast.LENGTH_SHORT).show()
-                        requestAudioFocus()
+                      requestAudioFocus()
                     }
 
 

@@ -42,20 +42,34 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
 
     }
 
+    public Integer elozokeycode = 0;
+    public Integer elozoszelesseg = 0;
+    public Integer elozomagassag = 0;
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-        Keygen(primaryCode);
-        System.out.println("mrk" + Keygen(primaryCode));
-        System.out.println("mrk");
+
+
+        if (elozokeycode != 0) {
+            Keyboard.Key key2 = keyboardView.getKeyboard().getKeys().get(elozokeycode);
+            key2.width = key2.width + 10;
+            key2.height = key2.height + 10;
+            keyboardView.getKeyboard().getKeys().set(elozokeycode, key2);
+
+        }
+
         Keyboard.Key key = keyboardView.getKeyboard().getKeys().get(Keygen(primaryCode));
+
+
         key.width = key.width - 10;
         key.height = key.height - 10;
-
         keyboardView.getKeyboard().getKeys().set(Keygen(primaryCode), key);
+
+
+        elozokeycode = Keygen(primaryCode);
+        elozoszelesseg = key.width;
+        elozomagassag = key.height;
         keyboardView.invalidateAllKeys();
-
-
         InputConnection inputConnection = getCurrentInputConnection();
         if (inputConnection != null) {
             switch (primaryCode) {
