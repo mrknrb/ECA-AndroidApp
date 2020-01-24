@@ -1,6 +1,10 @@
 package com.example.android.trackmysleepquality;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,6 +17,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static android.content.ContentValues.TAG;
 
@@ -29,14 +35,30 @@ public class NavigationAccessibilityService extends AccessibilityService  {
 System.out.println("mrkstart");
     }
 
+    private void sendMessage(String utasitas) {
+        Intent intent = new Intent("accessibilitytol");
+        // You can also include some extra data.
+        intent.putExtra("utasitas", utasitas);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            Boolean megnyitva = intent.getBooleanExtra("allapot",false);
+            if(megnyitva==true){
 
+            }else if (megnyitva==false){
+
+            }
+
+        }
+    };
     private WindowManager mWindowManager;
     private View mChatHeadView;
     @Override
     public void onCreate() {
         super.onCreate();
-
-
 
         mChatHeadView = LayoutInflater.from(this).inflate(R.layout.layout_chat_head, null);
 
@@ -143,6 +165,7 @@ System.out.println("mrkstart");
     }
     @Override
     public void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
 
         super.onDestroy();
        //removeView();

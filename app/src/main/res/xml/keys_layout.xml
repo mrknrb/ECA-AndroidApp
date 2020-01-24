@@ -140,7 +140,7 @@
             android:id="@+id/key29"
             android:codes="-5"
             android:keyEdgeFlags="right"
-            android:keyLabel="DEL" />
+            android:keyLabel="⌫" />
     </Row>
     <Row>
         <Key
@@ -199,6 +199,6 @@
             android:keyWidth="20%p"
             android:keyBackground="@color/colorPrimary"
             android:keyEdgeFlags="right"
-            android:keyLabel="DONE" />
+            android:keyLabel="⏎" />
     </Row>
 </Keyboard>

@@ -5,9 +5,7 @@ import android.accessibilityservice.GestureDescription
 import android.annotation.TargetApi
 import android.app.Notification
 import android.app.Service
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.res.Resources
 import android.graphics.Path
 import android.graphics.PixelFormat
@@ -26,6 +24,7 @@ import android.widget.ImageView
 import android.widget.Toast
 
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.example.android.trackmysleepquality.App.CHANNEL_ID
@@ -35,6 +34,7 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.Timer
 import kotlin.concurrent.schedule
+
 class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityService.SoftKeyboardController.OnShowModeChangedListener {
     var size = Point()
     private var mWindowManager: WindowManager? = null
@@ -42,17 +42,16 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
     private var mKeyBoardView: View? = null
     private var mediaSession: MediaSessionCompat? = null
     lateinit var audioManager: AudioManager
+    var billentyuzetallapot = false
     var dp = convertDpToPixel(1F).toInt()
-    var attachedchatheadview=false
+    var attachedchatheadview = false
     override fun onShowModeChanged(p0: SoftKeyboardController, p1: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        Toast.makeText(this@ChatHeadAccessibilityService1, "keyboard " , Toast.LENGTH_SHORT).show()
-        System.out.println("keyboardmrk")
     }
+
     lateinit var mainHandler: Handler
     private val updateTextTask = object : Runnable {
         override fun run() {
-           // Toast.makeText(this@ChatHeadAccessibilityService1, "Repeat? ", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(this@ChatHeadAccessibilityService1, "Repeat? ", Toast.LENGTH_SHORT).show()
             System.out.println("repeat")
             requestAudioFocus()
             val mMediaPlayer: MediaPlayer
@@ -62,9 +61,10 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
             mainHandler.postDelayed(this, 10000)
         }
     }
+
     private fun requestAudioFocus(): Boolean {
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val result = audioManager.requestAudioFocus(AudioManager.OnAudioFocusChangeListener {  }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+        val result = audioManager.requestAudioFocus(AudioManager.OnAudioFocusChangeListener { }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             //Focus gained
             return true
@@ -74,17 +74,18 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
     }
 
 
-    fun updatecursor(params:WindowManager.LayoutParams){
+    fun updatecursor(params: WindowManager.LayoutParams) {
 
-      /**todo bug app:id/chat_head_root} not attached to window manager*/
-      if(attachedchatheadview){
-          mWindowManager!!.updateViewLayout(mChatHeadView, params)
-      }
+        /**todo bug app:id/chat_head_root} not attached to window manager*/
+        if (attachedchatheadview) {
+            mWindowManager!!.updateViewLayout(mChatHeadView, params)
+        }
     }
+
     val metrics = Resources.getSystem().getDisplayMetrics()
 
-    fun layouttype():Int{
-        var LAYOUT_FLAG=0
+    fun layouttype(): Int {
+        var LAYOUT_FLAG = 0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         } else {
@@ -92,6 +93,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
         }
         return LAYOUT_FLAG
     }
+
     //Add the view to the window.
     val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -105,6 +107,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
             layouttype(),
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT)
+
     fun convertDpToPixel(dp: Float): Float {
         val metrics = Resources.getSystem().getDisplayMetrics()
 
@@ -149,15 +152,17 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
     var previousduplakattelozoido = 0L
     fun previous() {
         var previousduplakattjelenido = System.currentTimeMillis()
-        if ((previousduplakattjelenido - previousduplakattelozoido) > 300) {
+        if ((previousduplakattjelenido - previousduplakattelozoido) > 250) {
+
             if (billentyuzetallapot) {
+                sendMessage("balra")
+
             } else {
-                if(params.y>metrics.heightPixels-25*dp){
-                    scrollGesture(-1F,metrics.heightPixels/3.toFloat())
-            }
-               else if(params.y>metrics.heightPixels-70*dp){
-                    params.y =metrics.heightPixels- dp * 20
-                }else{
+                if (params.y > metrics.heightPixels - 25 * dp) {
+                    scrollGesture(-1F, metrics.heightPixels / 3.toFloat())
+                } else if (params.y > metrics.heightPixels - 70 * dp) {
+                    params.y = metrics.heightPixels - dp * 20
+                } else {
                     var initialY = params.y
                     params.y = initialY + dp * 50
                     updatecursor(params)
@@ -165,62 +170,139 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
                 }
             }
         } else {
-            if(params.y>metrics.heightPixels-25*dp){
+            //Toast.makeText(this@ChatHeadAccessibilityService1, "leaccess", Toast.LENGTH_SHORT).show()
 
-                //scrollGesture(-1F,300F)
+            if (billentyuzetallapot) {
+
+                sendMessage("le")
+            } else {
+                if (params.y > metrics.heightPixels - 25 * dp) {
+
+                    scrollGesture(-1F, metrics.heightPixels / 2.toFloat())
+                    Timer("SettingUp1", false).schedule(150) {
+                        scrollGesture(-1F, metrics.heightPixels / 2.toFloat())
+                        Timer("SettingUp2", false).schedule(150) {
+                            scrollGesture(-1F, metrics.heightPixels / 2.toFloat())
+                            Timer("SettingUp3", false).schedule(150) {
+                                scrollGesture(-1F, metrics.heightPixels / 2.toFloat())
+                                Timer("SettingUp3", false).schedule(150) {
+                                    scrollGesture(-1F, metrics.heightPixels / 2.toFloat())
+                                    Timer("SettingUp3", false).schedule(150) {
+                                        scrollGesture(-1F, metrics.heightPixels / 2.toFloat())
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //scrollGesture(-1F,300F)
+                } else if (params.y > metrics.heightPixels - 70 * dp) {
+                    params.y = metrics.heightPixels - dp * 20
+                } else if (params.y < metrics.heightPixels / 4) {
+                    params.y = metrics.heightPixels / 2
+                } else {
+                    params.y = metrics.heightPixels - dp * 20
+                }
+                updatecursor(params)
             }
-           else if(params.y>metrics.heightPixels-70*dp){
-                params.y =metrics.heightPixels- dp * 20
-            }else if(params.y <metrics.heightPixels/4){
-                params.y = metrics.heightPixels/2
-            }else{
-                params.y = metrics.heightPixels-dp * 20
-            }
-            updatecursor(params)
         }
         previousduplakattelozoido = System.currentTimeMillis()
     }
 
-    var billentyuzetallapot=false
     var nextduplakattelozoido = 0L
     fun next() {
-        var nextduplakattjelenido = System.currentTimeMillis()
-        if ((nextduplakattjelenido - nextduplakattelozoido) > 300) {
-            if (billentyuzetallapot) {
-            } else {
-                if(params.y<25*dp){
-                    scrollGesture(+1F,metrics.heightPixels/3.toFloat())
 
-                }else if(params.y<70*dp){
+        var nextduplakattjelenido = System.currentTimeMillis()
+        if ((nextduplakattjelenido - nextduplakattelozoido) > 250) {
+
+            if (billentyuzetallapot) {
+                sendMessage("jobbra")
+
+
+            } else {
+                if (params.y < 25 * dp) {
+                    scrollGesture(+1F, metrics.heightPixels / 3.toFloat())
+
+
+                } else if (params.y < 70 * dp) {
 
                     params.y = dp * 20
 
-                }else{
+                } else {
                     var initialY = params.y
                     params.y = initialY - dp * 50
                     updatecursor(params)
                 }
             }
         } else {
-            if(params.y<25*dp){
-                /*todo valami más funkció legyen*/
-               // scrollGesture(+1F,300F)
-        }
-           else if(params.y<70*dp){
-                params.y = dp * 20
-            }else if(params.y >3*metrics.heightPixels/4){
-                params.y = metrics.heightPixels/2
-            }else{
-                params.y = dp * 20
+            if (billentyuzetallapot) {
+
+                sendMessage("fel")
+            } else {
+
+                if (params.y < 25 * dp) {
+                    /*todo valami más funkció legyen*/
+                    // scrollGesture(+1F,300F)
+                    scrollGesture(+1F, metrics.heightPixels / 2.toFloat())
+                    Timer("SettingUp1", false).schedule(150) {
+                        scrollGesture(+1F, metrics.heightPixels / 2.toFloat())
+                        Timer("SettingUp2", false).schedule(150) {
+                            scrollGesture(+1F, metrics.heightPixels / 2.toFloat())
+                            Timer("SettingUp3", false).schedule(150) {
+                                scrollGesture(+1F, metrics.heightPixels / 2.toFloat())
+                                Timer("SettingUp3", false).schedule(150) {
+                                    scrollGesture(+1F, metrics.heightPixels / 2.toFloat())
+                                    Timer("SettingUp3", false).schedule(150) {
+                                        scrollGesture(+1F, metrics.heightPixels / 2.toFloat())
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                } else if (params.y < 70 * dp) {
+                    params.y = dp * 20
+                } else if (params.y > 3 * metrics.heightPixels / 4) {
+                    params.y = metrics.heightPixels / 2
+                } else {
+                    params.y = dp * 20
+                }
+                updatecursor(params)
             }
-            updatecursor(params)
         }
         nextduplakattelozoido = System.currentTimeMillis()
     }
 
+    var kozepsoduplakattelozoido3 = 0L
+    var kozepsoduplakattelozoido2 = 0L
+    var kozepsoduplakattelozoido1 = 0L
     fun playpause() {
-        var point = Point(params.x + 10, params.y + 60)
-        pressLocation(point)
+        kozepsoduplakattelozoido3 = kozepsoduplakattelozoido2
+        kozepsoduplakattelozoido2 = kozepsoduplakattelozoido1
+        kozepsoduplakattelozoido1 = System.currentTimeMillis()
+        if (kozepsoduplakattelozoido1 - kozepsoduplakattelozoido2 < 550) {
+            performGlobalAction(GLOBAL_ACTION_BACK)
+            //duplaklikk
+        } else {
+            Timer("SettingUp", false).schedule(550) {
+
+                if ((kozepsoduplakattelozoido1 - kozepsoduplakattelozoido2) < 550) {
+                    //semmi
+                }else{
+                    if (billentyuzetallapot) {
+                        sendMessage("click")
+                    } else {
+                        var point = Point(params.x + 10, params.y + 60)
+                        pressLocation(point)
+                    }
+                }
+
+
+
+            }
+        }
     }
 
     @TargetApi(24)
@@ -245,16 +327,17 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
         }, null)
         // Toast.makeText(this@ChatHeadAccessibilityService1, "Was it dispatched? " + isDispatched, Toast.LENGTH_SHORT).show()
     }
+
     @TargetApi(24)
-    private fun scrollGesture(minusplus:Float,nagysag:Float) {
+    private fun scrollGesture(minusplus: Float, nagysag: Float) {
         val builder = GestureDescription.Builder()
         val p = Path()
         // p.moveTo(600F , 850F )
         // p.lineTo(620F, 850F)
 
-        p.moveTo(metrics.widthPixels.toFloat()/2,metrics.heightPixels.toFloat()/2)
-        p.lineTo(metrics.widthPixels.toFloat()/2,minusplus*nagysag+metrics.heightPixels.toFloat()/2)
-        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 200L))
+        p.moveTo(metrics.widthPixels.toFloat() / 2, (metrics.heightPixels.toFloat() / 2)-minusplus*metrics.heightPixels.toFloat()/6)
+        p.lineTo(metrics.widthPixels.toFloat() / 2, minusplus * nagysag + metrics.heightPixels.toFloat() / 2)
+        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 150L))
         val gesture = builder.build()
         val isDispatched = dispatchGesture(gesture, object : GestureResultCallback() {
             override fun onCompleted(gestureDescription: GestureDescription) {
@@ -267,6 +350,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
         }, null)
         // Toast.makeText(this@ChatHeadAccessibilityService1, "Was it dispatched? " + isDispatched, Toast.LENGTH_SHORT).show()
     }
+
     private val mMediaSessionCallback = object : MediaSessionCompat.Callback() {
         override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
             val intentAction = mediaButtonEvent.action
@@ -323,9 +407,26 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
 
     }
 
+    private fun sendMessage(utasitas: String) {
+        val intent = Intent("accessibilitytol")
+        // You can also include some extra data.
+        intent.putExtra("utasitas", utasitas)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private val mMessageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            // Get extra data included in the Intent
+
+            billentyuzetallapot = intent.getBooleanExtra("allapot", false)
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                IntentFilter("billentyuzettol"))
 
 
         val receiver = ComponentName(packageName, RemoteReceiver::class.java.name)
@@ -355,24 +456,24 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
 
         //Add the view to the window
 
-        mKeyBoardView= LayoutInflater.from(this).inflate(R.layout.layout_keyboard, null)
-        Toast.makeText(this, "Permission granted: \$PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
-        paramskeyboard.gravity= Gravity.CENTER
-        paramskeyboard.horizontalWeight=1F
-        paramskeyboard.horizontalMargin=0F
+        // mKeyBoardView= LayoutInflater.from(this).inflate(R.layout.layout_keyboard, null)
+        // Toast.makeText(this, "Permission granted: \$PERMISSION_REQUEST_READ_PHONE_STATE", Toast.LENGTH_SHORT).show()
+        //paramskeyboard.gravity= Gravity.CENTER
+        // paramskeyboard.horizontalWeight=1F
+        // paramskeyboard.horizontalMargin=0F
 
-       // paramskeyboard.x = 50
-    //  paramskeyboard.y = 10
-                mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        // paramskeyboard.x = 50
+        //  paramskeyboard.y = 10
+        mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         mWindowManager!!.addView(mChatHeadView, params)
-        mWindowManager!!.addView(mKeyBoardView, paramskeyboard)
-        attachedchatheadview=true
+        //mWindowManager!!.addView(mKeyBoardView, paramskeyboard)
+        attachedchatheadview = true
         var defaultdisplay = mWindowManager!!.defaultDisplay.getSize(size)
 
-/**todo remove es addkeyboard
+        /**todo remove es addkeyboard
         mWindowManager!!.addView(mKeyBoardView,paramskeyboard)
-       mWindowManager!!.removeView(mKeyBoardView)
-        */
+        mWindowManager!!.removeView(mKeyBoardView)
+         */
 //defaultdisplay.getSize(size)
         /*
         //Set the close button.
@@ -404,6 +505,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
             private var initialTouchY: Float = 0.toFloat()
 
             override fun onTouch(v: View, event: MotionEvent): Boolean {
+                billentyuzetallapot = false
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
 

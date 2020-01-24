@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_ttsprogram.*
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent.getActivity
-import android.content.Context
+import android.content.*
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.speech.tts.TextToSpeech
@@ -28,8 +28,6 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.example.android.trackmysleepquality.database.Mondat
 import com.example.android.trackmysleepquality.database.MondatDatabase
-import android.content.DialogInterface
-import android.content.Intent
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.app.ComponentActivity
@@ -46,6 +44,11 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.os.Handler
+import android.os.Message
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 
 class ttsprogram : AppCompatActivity() {
@@ -53,7 +56,6 @@ class ttsprogram : AppCompatActivity() {
     var ttstext: EditText? = null
     override fun onBackPressed() {
     }
-
     fun ttsopen2() {
         val intent = Intent(this, ttsbetoltes::class.java)
         startActivity(intent)
@@ -89,9 +91,38 @@ class ttsprogram : AppCompatActivity() {
 
 
     override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+
         super.onDestroy()
     }
+    //tts playertől fogadás
+    private val mMessageReceiver = object: BroadcastReceiver() {
+       override fun onReceive(context:Context, intent:Intent) {
+            // Get extra data included in the Intent
+            val aktualismondatindex = intent.getIntExtra("aktualismondatindex",0)
+           val aktualisfejezetindex = intent.getIntExtra("aktualisfejezetindex",0)
+           val bongeszoallapot = intent.getIntExtra("bongeszoallapot",0)
+
+
+
+            //Log.d("receiver", "Got message: " + message)
+        }
+    }
+//tts playernek küldés
+    fun sendPlayerActions(eventtype:String,value:Int) {
+        //Log.d("sender", "Broadcasting message");
+        var intent:Intent  =Intent("tts_sendPlayerActions");
+        // You can also include some extra data.
+        intent.putExtra("eventtype", eventtype);
+    intent.putExtra("value", value);
+    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
+        //tts playertől fogadáshoz kell
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                IntentFilter("tts_state"));
+
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ttsprogram)
         val message = intent.getStringExtra(EXTRA_MESSAGE)
@@ -99,19 +130,20 @@ class ttsprogram : AppCompatActivity() {
         ttstext = findViewById(R.id.ttstext)
         var ttstitle: EditText = findViewById(R.id.ttstitle)
         var mSeekBarSpeed: SeekBar = findViewById(R.id.speedseekbar)
-        var mSeekBarVolume: SeekBar = findViewById(R.id.volumeseekbar)
         var mSeekBarPitch: SeekBar = findViewById(R.id.pitchseekbar)
         var speakclick: ImageButton = findViewById(R.id.playtts)
+        var nextbutton: ImageButton = findViewById(R.id.nextbutton)
+        var  previousbutton: ImageButton = findViewById(R.id. previousbutton)
         var stopbutton: ImageButton = findViewById(R.id.stopbutton)
         var fejezetlista: ListView = findViewById(R.id.fejezetlista)
         var startbutton: Button = findViewById(R.id.startbutton)
+
+
         val builder = AlertDialog.Builder(this)
-        mSeekBarPitch.max = 20
+        mSeekBarPitch.max = 30
         mSeekBarPitch.progress = 10
         mSeekBarSpeed.max = 40
         mSeekBarSpeed.progress = 10
-        mSeekBarVolume.max = 40
-        mSeekBarVolume.progress = 10
         fun listafrissito() {
             val myFriends = mondatadatbazis.sleepDatabaseDao.getAllFejezetFileAlapjan(message)
             val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, myFriends)
@@ -135,6 +167,10 @@ class ttsprogram : AppCompatActivity() {
         }
         mSeekBarSpeed.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+
+                sendPlayerActions("speed",i)
+                Toast.makeText(applicationContext, "Speed: "+i.toFloat()/10, Toast.LENGTH_LONG).show()
+
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {
             }
@@ -143,22 +179,16 @@ class ttsprogram : AppCompatActivity() {
         })
         mSeekBarPitch.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                Toast.makeText(applicationContext, "Pitch: "+i.toFloat()/10, Toast.LENGTH_LONG).show()
+
+                sendPlayerActions("pitch",i)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {
             }
             override fun onStopTrackingTouch(seekBar: SeekBar) {
             }
         })
-        mSeekBarVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-            }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-            }
-        })
         startbutton.setOnClickListener {
             if(ttstitle.text.toString()=="") {
                 builder.setMessage("Please load a file!")
@@ -174,13 +204,26 @@ class ttsprogram : AppCompatActivity() {
                 val serviceIntent = Intent(this, PlayerService::class.java)
                 // serviceIntent.putExtra("inputExtra", input)
              serviceIntent.putExtra("cim", ttstitle.text.toString())
+                serviceIntent.putExtra("speed", ttstitle.text.toString())
+
                 ContextCompat.startForegroundService(this, serviceIntent)
             }
 
         }
         speakclick.setOnClickListener {
 
+            sendPlayerActions("playpause",0)
         }
+        nextbutton.setOnClickListener {
+
+            sendPlayerActions("next",0)
+        }
+        previousbutton.setOnClickListener {
+
+            sendPlayerActions("previous",0)
+        }
+
+
         stopbutton.setOnClickListener {
             stopService(Intent(this, PlayerService::class.java))
 

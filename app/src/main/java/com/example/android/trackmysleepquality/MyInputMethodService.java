@@ -1,14 +1,22 @@
 package com.example.android.trackmysleepquality;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class MyInputMethodService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
 
@@ -17,12 +25,111 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
 
     private boolean caps = false;
 
+    private void sendMessage(Boolean allapot) {
+        Intent intent = new Intent("billentyuzettol");
+        intent.putExtra("allapot", allapot);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String utasitas = intent.getStringExtra("utasitas");
+            if (utasitas == "click") {
+                Integer elozokeycodemod = elozokeycode;
+                if (elozokeycode < 48 && elozokeycode > 39) {
+                    elozokeycodemod = 40;
+                } else if (elozokeycode >47 && elozokeycode <50) {
+                    elozokeycodemod = 41;
+                }
+                karakterberako(Keygenvissza(elozokeycodemod));
+            } else {
+                Integer keycode = elozokeycode;
+                if (utasitas == "balra") {
+                    if (elozokeycode == 0) {
+                        keycode = 9;
+                    } else if (elozokeycode == 10) {
+                        keycode = 19;
+                    } else if (elozokeycode == 20) {
+                        keycode = 29;
+                    } else if (elozokeycode == 30) {
+                        keycode = 39;
+                    } else if (elozokeycode == 40) {
+                        keycode = 49;
+                    } else {
+                        keycode = elozokeycode - 1;
+                    }
+                } else if (utasitas == "jobbra") {
+                    if (elozokeycode == 9) {
+                        keycode = 0;
+                    } else if (elozokeycode == 19) {
+                        keycode = 10;
+                    } else if (elozokeycode == 29) {
+                        keycode = 20;
+                    } else if (elozokeycode == 39) {
+                        keycode = 30;
+                    } else if (elozokeycode == 49) {
+                        keycode = 40;
+                    } else {
+                        keycode = elozokeycode + 1;
+                    }
+                } else if (utasitas == "fel") {
+                    if (elozokeycode < 10 && elozokeycode > -1) {
+                        keycode = elozokeycode + 39;
+                    } else {
+                        keycode = elozokeycode - 11;
+                    }
+                } else if (utasitas == "le") {
+                    if (elozokeycode < 50 && elozokeycode > 39) {
+                        keycode = elozokeycode - 39;
+                    } else {
+                        keycode = elozokeycode + 11;
+                    }
+                }
+                kijelolesfrissito(keycode);
+            }
+        }
+    };
+
+
+    @Override
+    public void onWindowHidden() {
+        super.onWindowHidden();
+
+        sendMessage(false);
+    }
+
+    @Override
+    public void onWindowShown() {
+        super.onWindowShown();
+
+        sendMessage(true);
+
+    }
+
+
+    @Override
+    public void onCreate() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("accessibilitytol"));
+
+        super.onCreate();
+    }
+
     @Override
     public View onCreateInputView() {
         keyboardView = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard_view, null);
         keyboard = new Keyboard(this, R.xml.keys_layout);
         keyboardView.setKeyboard(keyboard);
         keyboardView.setOnKeyboardActionListener(this);
+
+
+        Keyboard.Key key = keyboardView.getKeyboard().getKeys().get(25);
+        key.width = key.width - 10;
+        key.height = key.height - 10;
+        keyboardView.getKeyboard().getKeys().set(25, key);
+
+        keyboardView.invalidateAllKeys();
         return keyboardView;
     }
 
@@ -42,34 +149,44 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
 
     }
 
-    public Integer elozokeycode = 0;
+    public Integer elozokeycode = 25;
     public Integer elozoszelesseg = 0;
     public Integer elozomagassag = 0;
 
-    @Override
-    public void onKey(int primaryCode, int[] keyCodes) {
-
-
-        if (elozokeycode != 0) {
-            Keyboard.Key key2 = keyboardView.getKeyboard().getKeys().get(elozokeycode);
-            key2.width = key2.width + 10;
-            key2.height = key2.height + 10;
-            keyboardView.getKeyboard().getKeys().set(elozokeycode, key2);
-
+    public void kijelolesfrissito(int keycode) {
+        Integer elozokeycodemod = elozokeycode;
+        if (elozokeycode < 48 && elozokeycode > 39) {
+            elozokeycodemod = 40;
+        } else if (elozokeycode == 48 || elozokeycode == 49) {
+            elozokeycodemod = 41;
+        }
+        Integer keycodemod = keycode;
+        if (keycode < 48 && keycode > 39) {
+            keycodemod = 40;
+        } else if (keycode == 48 || keycode == 49) {
+            keycodemod = 41;
         }
 
-        Keyboard.Key key = keyboardView.getKeyboard().getKeys().get(Keygen(primaryCode));
+            Keyboard.Key key2 = keyboardView.getKeyboard().getKeys().get(elozokeycodemod);
+            key2.width = key2.width + 10;
+            key2.height = key2.height + 10;
+            keyboardView.getKeyboard().getKeys().set(elozokeycodemod, key2);
 
 
+        Keyboard.Key key = keyboardView.getKeyboard().getKeys().get(keycodemod);
         key.width = key.width - 10;
         key.height = key.height - 10;
-        keyboardView.getKeyboard().getKeys().set(Keygen(primaryCode), key);
+        keyboardView.getKeyboard().getKeys().set(keycodemod, key);
 
 
-        elozokeycode = Keygen(primaryCode);
+        elozokeycode = keycode;
         elozoszelesseg = key.width;
         elozomagassag = key.height;
         keyboardView.invalidateAllKeys();
+
+    }
+
+    public void karakterberako(int primaryCode) {
         InputConnection inputConnection = getCurrentInputConnection();
         if (inputConnection != null) {
             switch (primaryCode) {
@@ -101,6 +218,13 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
 
             }
         }
+    }
+
+    @Override
+    public void onKey(int primaryCode, int[] keyCodes) {
+
+        kijelolesfrissito(Keygen(primaryCode));
+        karakterberako(primaryCode);
 
     }
 
@@ -132,7 +256,9 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
 
     public Integer Keygen(Integer primaryCode) {
         Integer keynumber = 0;
-        if (primaryCode == 49) {
+        if (primaryCode == 48) {
+            keynumber = 0;}
+       else if (primaryCode == 49) {
             keynumber = 1;
         } else if (primaryCode == 50) {
             keynumber = 2;
@@ -219,4 +345,103 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
         return keynumber;
     }
 
+    public Integer Keygenvissza(Integer keynum) {
+        Integer primaryc = 0;
+        if (keynum == 0) {
+            primaryc = 48;
+        }
+       else if (keynum == 1) {
+            primaryc = 49;
+        } else if (keynum == 2) {
+            primaryc = 50;
+        } else if (keynum == 3) {
+            primaryc = 51;
+        } else if (keynum == 4) {
+            primaryc = 52;
+        } else if (keynum == 5) {
+            primaryc = 53;
+        } else if (keynum == 6) {
+            primaryc = 54;
+        } else if (keynum == 7) {
+            primaryc = 55;
+        } else if (keynum == 8) {
+            primaryc = 56;
+        } else if (keynum == 9) {
+            primaryc = 57;
+        } else if (keynum == 10) {
+            primaryc = 113;
+        } else if (keynum == 11) {
+            primaryc = 119;
+        } else if (keynum == 12) {
+            primaryc = 101;
+        } else if (keynum == 13) {
+            primaryc = 114;
+        } else if (keynum == 14) {
+            primaryc = 116;
+        } else if (keynum == 15) {
+            primaryc = 121;
+        } else if (keynum == 16) {
+            primaryc = 117;
+        } else if (keynum == 17) {
+            primaryc = 105;
+        } else if (keynum == 18) {
+            primaryc = 111;
+        } else if (keynum == 19) {
+            primaryc = 112;
+        } else if (keynum == 20) {
+            primaryc = 97;
+        } else if (keynum == 21) {
+            primaryc = 115;
+        } else if (keynum == 22) {
+            primaryc = 100;
+        } else if (keynum == 23) {
+            primaryc = 102;
+        } else if (keynum == 24) {
+            primaryc = 103;
+        } else if (keynum == 25) {
+            primaryc = 104;
+        } else if (keynum == 26) {
+            primaryc = 106;
+        } else if (keynum == 27) {
+            primaryc = 107;
+        } else if (keynum == 28) {
+            primaryc = 108;
+        } else if (keynum == 29) {
+            primaryc = -5;
+        } else if (keynum == 30) {
+            primaryc = 122;
+        } else if (keynum == 31) {
+            primaryc = 120;
+        } else if (keynum == 32) {
+            primaryc = 99;
+        } else if (keynum == 33) {
+            primaryc = 118;
+        } else if (keynum == 34) {
+            primaryc = 98;
+        } else if (keynum == 35) {
+            primaryc = 110;
+        } else if (keynum == 36) {
+            primaryc = 109;
+        } else if (keynum == 37) {
+            primaryc = 46;
+        } else if (keynum == 38) {
+            primaryc = 63;
+        } else if (keynum == 39) {
+            primaryc = 33;
+        } else if (keynum == 40) {
+            primaryc = 32;
+        } else if (keynum == 41) {
+            primaryc = -4;
+        }
+
+        return primaryc;
+    }
+
+    @Override
+    public void onDestroy() {
+        Toast.makeText(getApplicationContext(), "onDestroy", Toast.LENGTH_SHORT).show();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
 }

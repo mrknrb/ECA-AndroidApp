@@ -2,9 +2,6 @@ package com.example.android.trackmysleepquality
 
 import android.app.Notification
 import android.app.Service
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -39,6 +36,9 @@ import android.telephony.PhoneStateListener
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.R.attr.name
+import android.content.*
+import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.android.trackmysleepquality.OngoingCall.state
 
 
@@ -71,19 +71,20 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             AudioManager.AUDIOFOCUS_GAIN -> {
                 /*todo ha csak simán elveszíti a fókuszt, majd visszaszerzi, ne nyissa meg*/
                 /*todo az audiofocust stabilan, minden esetben szerezze vissza*/
-               // valtofunction()
+                // valtofunction()
             }
             AudioManager.AUDIOFOCUS_LOSS -> {
                 //requestAudioFocus()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-               // requestAudioFocus()
+                // requestAudioFocus()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-              //  requestAudioFocus()
+                //  requestAudioFocus()
             }
         }
     }
+
     private fun requestAudioFocus(): Boolean {
         val mMediaPlayer: MediaPlayer
         mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
@@ -96,30 +97,35 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             return true
         }
         //Could not gain focus
-       // requestAudioFocus()
+        // requestAudioFocus()
         return false
     }
+
     private fun removeAudioFocus(): Boolean {
         return (AudioManager.AUDIOFOCUS_REQUEST_GRANTED === audioManager.abandonAudioFocus(this))
     }
+
     var kozepsoduplakattelozoido = 0L
     fun valtofunction() {
         if (bongeszoallapot) {
-            mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(cim, fejezetek[aktualisfejezetindex])
+            mondatokszama=-1
+            aktualismondatindex=0
+            mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(cim, fejezetek[aktualisfejezetindexellenorzo()])
             for (mondat in mondatok) {
                 System.out.println("mrk" + mondat)
+
                 mondatokszama = mondatokszama + 1
             }
             myTts.stop()
-           // myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
-            myTts.speak("Opening file Opening file Opening file", TextToSpeech.QUEUE_FLUSH, null)
+            // myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+            myTts.speak("Opening file", TextToSpeech.QUEUE_FLUSH, null)
             bongeszoallapot = false
         } else {
             var aktualisfejezetszoveg = aktualisfejezetindex + 1
             var fejezetszamaszoveg = fejezetekszama + 1
             myTts.stop()
-           // myTts.speak("Closing" + aktualisfejezetszoveg.toString() + "of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
-            myTts.speak("Closing file Closing file Closing file", TextToSpeech.QUEUE_FLUSH, null)
+            // myTts.speak("Closing" + aktualisfejezetszoveg.toString() + "of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+            myTts.speak("Closing file", TextToSpeech.QUEUE_FLUSH, null)
 
             bongeszoallapot = true
         }
@@ -128,18 +134,38 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
     fun playpause() {
         var kozepsoduplakattjelenido = System.currentTimeMillis()
+        sendState();
         if ((kozepsoduplakattjelenido - kozepsoduplakattelozoido) > 800) {
             if (bongeszoallapot) {
-
-                myTts.speak((aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+                myTts.speak((aktualisfejezetindex + 1).toString() + "of" + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
 
             } else {
-                myTts.speak((aktualismondatindex+1).toString() +"of"+(mondatokszama+1).toString().plus(",")+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+                myTts.speak((aktualismondatindex + 1).toString() + "of" + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
             }
         } else {
             valtofunction()
         }
         kozepsoduplakattelozoido = System.currentTimeMillis()
+    }
+   fun aktualismondatindexellenorzo(): Int {
+      if(aktualismondatindex<0){
+          return 0
+      }else if(aktualismondatindex>mondatokszama){
+          return mondatokszama
+      }else{ return aktualismondatindex
+
+      }
+   }
+    fun aktualisfejezetindexellenorzo(): Int {
+        if(aktualisfejezetindex<0){
+            return 0
+        }else if(aktualisfejezetindex>fejezetekszama){
+            return fejezetekszama
+        }else{ return aktualisfejezetindex
+
+        }
     }
     fun next() {
 
@@ -147,17 +173,24 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
             if (aktualisfejezetindex < fejezetekszama) {
                 aktualisfejezetindex++
-                myTts.speak((aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+                myTts.speak((aktualisfejezetindex + 1).toString() + "of" + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
 
             } else {
-                myTts.speak("Last Part:" + (aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+                myTts.speak("Last Part:" + (aktualisfejezetindex + 1).toString() + "of" + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
             }
         } else {
             if (aktualismondatindex < mondatokszama) {
                 aktualismondatindex++
-                myTts.speak((aktualismondatindex+1).toString() +"of"+(mondatokszama+1).toString().plus(",")+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+               //todo java.lang.IndexOutOfBoundsException: Index: 7, Size: 5 összeomlott
+
+                myTts.speak((aktualismondatindex + 1).toString() + "of" + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
+
             } else {
-                myTts.speak("Last Sentence:" + (aktualismondatindex+1).toString() + "of" + (mondatokszama+1).toString().plus(",") + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+                myTts.speak("Last Sentence:" + (aktualismondatindex + 1).toString() + "of" + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
             }
         }
 
@@ -168,17 +201,20 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         if (bongeszoallapot) {
             if (aktualisfejezetindex > 0) {
                 aktualisfejezetindex--
-
-                myTts.speak((aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+                myTts.speak((aktualisfejezetindex + 1).toString() + "of" + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                myTts.speak("First Part:" + (aktualisfejezetindex+1).toString() + "of" + (fejezetekszama+1).toString().plus(",") + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
- }
+                myTts.stop()
+                myTts.speak("First Part:" + (aktualisfejezetindex + 1).toString() + "of" + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
+            }
         } else {
             if (aktualismondatindex > 0) {
                 aktualismondatindex--
-                myTts.speak((aktualismondatindex+1).toString() +"of"+(mondatokszama+1).toString().plus(",")+mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+                myTts.speak((aktualismondatindex + 1).toString() + "of" + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
             } else {
-                myTts.speak("First Sentence:" + (aktualismondatindex+1).toString() + "of" + (mondatokszama+1).toString().plus(",") + mondatok[aktualismondatindex], TextToSpeech.QUEUE_FLUSH, null)
+                myTts.stop()
+                myTts.speak("First Sentence:" + (aktualismondatindex + 1).toString() + "of" + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
             }
         }
     }
@@ -222,21 +258,22 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                             playpause()
                         }
                         KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                            next()
-                            Toast.makeText(applicationContext, "next", Toast.LENGTH_SHORT).show()
+                            /***megcseréltem a nextet a previoussal*/
+                            previous()
+                            Toast.makeText(applicationContext, "prev", Toast.LENGTH_SHORT).show()
                         }
 
                         KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                            previous()
-                            Toast.makeText(applicationContext, "prev", Toast.LENGTH_SHORT).show()
+                            next()
+                            Toast.makeText(applicationContext, "next", Toast.LENGTH_SHORT).show()
                         }
 
 
                     }
                     /***ez fingom sics, hogy mi*/
-                    startService(Intent(applicationContext, PlayerService::class.java)
+                   // startService(Intent(applicationContext, PlayerService::class.java)
 
-                    )
+                   // )
                     return true
                 }
             }
@@ -256,36 +293,36 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         //Starting listening for PhoneState changes
 
         requestAudioFocus()
-         /*val mMediaPlayer2: MediaPlayer
-        mMediaPlayer2 = MediaPlayer.create(applicationContext, R.raw.silent_sound)
-        mMediaPlayer2.setOnCompletionListener { mMediaPlayer2.release() }
+        /*val mMediaPlayer2: MediaPlayer
+       mMediaPlayer2 = MediaPlayer.create(applicationContext, R.raw.silent_sound)
+       mMediaPlayer2.setOnCompletionListener { mMediaPlayer2.release() }
 */
         phoneStateListener = object : PhoneStateListener() {
             override fun onCallStateChanged(state: Int, incomingNumber: String) {
 
-               // requestAudioFocus()
-               // myTts.speak("Opening file Opening file Opening file", TextToSpeech.QUEUE_FLUSH, null)
+                // requestAudioFocus()
+                // myTts.speak("Opening file Opening file Opening file", TextToSpeech.QUEUE_FLUSH, null)
 
                 when (state) {
 
                     //if at least one call exists or the phone is ringing
                     //pause the MediaPlayer
-                    TelephonyManager.CALL_STATE_OFFHOOK,TelephonyManager.CALL_STATE_RINGING -> {
+                    TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING -> {
 
                         Toast.makeText(applicationContext, "1", Toast.LENGTH_SHORT).show()
                         valtofunction()
                         requestAudioFocus()
-                   // requestAudioFocus()
+                        // requestAudioFocus()
 
                         // mMediaPlayer2.start()
                     }
                     TelephonyManager.CALL_STATE_IDLE -> {
                         // Phone idle. Start playing.
-                     // requestAudioFocus()
-                       // mMediaPlayer2.start()
+                        // requestAudioFocus()
+                        // mMediaPlayer2.start()
                         //myTts.speak("bdfb gbdfgbdfgb dbgfbdfgbd dfgbdfgbd", TextToSpeech.QUEUE_FLUSH, null)
                         Toast.makeText(applicationContext, "2", Toast.LENGTH_SHORT).show()
-                      requestAudioFocus()
+                        requestAudioFocus()
                     }
 
 
@@ -298,9 +335,50 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                 PhoneStateListener.LISTEN_CALL_STATE)
     }
 
+    //tts programnak küldés
+    fun sendState() {
+        //Log.d("sender", "Broadcasting message");
+        var intent: Intent = Intent("tts_state");
+        // You can also include some extra data.
+        intent.putExtra("aktualismondatindex", aktualismondatindex);
+        intent.putExtra("aktualisfejezetindex", aktualisfejezetindex);
+        intent.putExtra("bongeszoallapot", bongeszoallapot);
+
+
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    //tts programtól fogadás
+    private val mMessageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            // Get extra data included in the Intent
+            val eventtype = intent.getStringExtra("eventtype")
+            val value = intent.getIntExtra("value", 0)
+
+            if(eventtype=="speed"){
+                myTts.setSpeechRate(value.toFloat()/10)
+            }else if(eventtype=="pitch"){
+                myTts.setPitch(value.toFloat()/10)
+            }else if(eventtype=="playpause"){
+                playpause()
+            }else if(eventtype=="next"){
+                next()
+            }else if(eventtype=="previous"){
+                previous()
+            }
+
+
+
+            //Log.d("receiver", "Got message: " + message)
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
-
+        //tts programtól fogadáshoz
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                IntentFilter("tts_sendPlayerActions"));
 
         //Handle incoming phone calls
         callStateListener()
@@ -332,9 +410,9 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         myTts = TextToSpeech(applicationContext, TextToSpeech.OnInitListener { status ->
             if (status != TextToSpeech.ERROR) {
                 myTts.language = Locale.US
+                myTts.setSpeechRate(1F)
             }
         })
-        myTts.setSpeechRate(1f)
 
         val receiver = ComponentName(packageName, RemoteReceiver::class.java.name)
         mediaSession = MediaSessionCompat(this, "PlayerService", receiver, null)
@@ -426,6 +504,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         super.onDestroy()
         Toast.makeText(applicationContext, "vege", Toast.LENGTH_SHORT).show()
         Toast.makeText(getBaseContext(), "onDestroy", Toast.LENGTH_LONG).show();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         //if (mChatHeadView != null) mWindowManager.removeView(mChatHeadView)
         // mediaSession!!.release()
     }
