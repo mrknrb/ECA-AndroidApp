@@ -241,8 +241,6 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
             } else {
 
                 if (params.y < 25 * dp) {
-                    /*todo valami más funkció legyen*/
-                    // scrollGesture(+1F,300F)
                     scrollGesture(+1F, metrics.heightPixels / 2.toFloat())
                     Timer("SettingUp1", false).schedule(150) {
                         scrollGesture(+1F, metrics.heightPixels / 2.toFloat())
@@ -274,7 +272,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
         }
         nextduplakattelozoido = System.currentTimeMillis()
     }
-
+/*
     var kozepsoduplakattelozoido3 = 0L
     var kozepsoduplakattelozoido2 = 0L
     var kozepsoduplakattelozoido1 = 0L
@@ -304,7 +302,26 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
             }
         }
     }
+*/
+    var kozepsoduplakattelozoido1 = 0L
+    fun playpause() {
 
+        if (System.currentTimeMillis() - kozepsoduplakattelozoido1 < 750) {
+            performGlobalAction(GLOBAL_ACTION_BACK)
+            //duplaklikk
+        } else {
+            if (billentyuzetallapot) {
+                sendMessage("click")
+            } else {
+                var point = Point(params.x + 10, params.y + 60)
+                pressLocation(point)
+            }
+
+
+
+        }
+        kozepsoduplakattelozoido1 = System.currentTimeMillis()
+    }
     @TargetApi(24)
     private fun pressLocation(position: Point) {
         val builder = GestureDescription.Builder()
@@ -314,7 +331,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
 
         p.moveTo(position.x.toFloat(), position.y.toFloat())
         p.lineTo((position.x + 5).toFloat(), (position.y + 5).toFloat())
-        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 50L))
+        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 100L))
         val gesture = builder.build()
         val isDispatched = dispatchGesture(gesture, object : GestureResultCallback() {
             override fun onCompleted(gestureDescription: GestureDescription) {
@@ -470,10 +487,6 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
         attachedchatheadview = true
         var defaultdisplay = mWindowManager!!.defaultDisplay.getSize(size)
 
-        /**todo remove es addkeyboard
-        mWindowManager!!.addView(mKeyBoardView,paramskeyboard)
-        mWindowManager!!.removeView(mKeyBoardView)
-         */
 //defaultdisplay.getSize(size)
         /*
         //Set the close button.
@@ -556,6 +569,8 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
 
     override fun onDestroy() {
         super.onDestroy()
+
+        mainHandler.removeCallbacks(updateTextTask)
         if (mChatHeadView != null) mWindowManager!!.removeView(mChatHeadView)
     }
 }

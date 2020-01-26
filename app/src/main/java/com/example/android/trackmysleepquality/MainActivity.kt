@@ -50,11 +50,18 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.telecom.TelecomManager
 import android.widget.TextView
+import android.text.Spannable
+import android.text.style.TypefaceSpan
+import android.text.SpannableString
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -84,11 +91,7 @@ class MainActivity : AppCompatActivity() {
 
 
         findViewById<TextView>(R.id.textView6).setOnClickListener(View.OnClickListener {
-           // startService(Intent(this@MainActivity, ChatHeadService::class.java))
-            val serviceIntent = Intent(this, ChatHeadService::class.java)
-            // serviceIntent.putExtra("inputExtra", input)
-            ContextCompat.startForegroundService(this, serviceIntent)
-            finish()
+
         })
 
 

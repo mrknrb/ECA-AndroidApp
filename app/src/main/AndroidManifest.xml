@@ -11,7 +11,7 @@
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Exam Cheating Academy"
+        android:label="Pen Controller"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -22,7 +22,8 @@
                 </action>
             </intent-filter>
         </receiver>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:label="RS Pen Controller" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -68,7 +69,7 @@
 
         <activity
             android:name=".ttsprogram"
-            android:label="Text to Speech Player" />
+            android:label="Text to Speech" />
         <activity
             android:name=".ttsbetoltes"
             android:label="@string/title_activity_ttsbetoltes">
@@ -112,6 +113,9 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

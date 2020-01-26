@@ -68,9 +68,9 @@ class ttsbetoltes : AppCompatActivity() {
         var ttstextModositasElott = ttstextModositasElott0.text.toString()
         fun listafrissito() {
 
-            val myFriends = mondatadatbazis.sleepDatabaseDao.getAllFile()
+            val myFile = mondatadatbazis.sleepDatabaseDao.getAllFile()
 
-            val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, myFriends)
+            val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, myFile)
 
             friendsListView.setAdapter(arrayAdapter)
 
@@ -81,13 +81,12 @@ class ttsbetoltes : AppCompatActivity() {
 
 
                         val szovegvisszaallitott = StringBuilder()
-                        ttstitle.setText(myFriends[i])
+                        ttstitle.setText(myFile[i])
                         szovegvisszaallitott.toString()
-                        //todo szöveg betöltő
-                        var fejezetek = mondatadatbazis.sleepDatabaseDao.getAllFejezetFileAlapjan(myFriends[i])
+                        var fejezetek = mondatadatbazis.sleepDatabaseDao.getAllFejezetFileAlapjan(myFile[i])
                         fejezetek.forEachIndexed { j, k ->
                             szovegvisszaallitott.append("#" + k + System.getProperty("line.separator"))
-                            var mondatokafejezetben = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(myFriends[i], k)
+                            var mondatokafejezetben = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(myFile[i], k)
                             mondatokafejezetben.forEachIndexed { i, l ->
                                 szovegvisszaallitott.append(l)
                             }
@@ -95,7 +94,7 @@ class ttsbetoltes : AppCompatActivity() {
                         ttstext.setText(szovegvisszaallitott.toString())
                         ttstextModositasElott = szovegvisszaallitott.toString()
                         //  overridePendingTransition(0, 0);
-                        // Toast.makeText(applicationContext,  myFriends[i]+"Opened", Toast.LENGTH_LONG).show()
+                        // Toast.makeText(applicationContext,  myFile[i]+"Opened", Toast.LENGTH_LONG).show()
                        // ttstextModositasElott=szovegvisszaallitott.toString()
                     }
 
@@ -122,14 +121,14 @@ class ttsbetoltes : AppCompatActivity() {
                     //builder.setMessage("Do you want to delete this?")
                     builder.setNegativeButton("Edit", DialogInterface.OnClickListener { dialogInterface, itt ->
 
-                        ttstitle.setText(myFriends[i])
+                        ttstitle.setText(myFile[i])
 
                     })
                     builder.setPositiveButton("Delete", DialogInterface.OnClickListener { dialogInterface, itt ->
 
 
-                        mondatadatbazis.sleepDatabaseDao.deletefile(myFriends[i])
-                        Toast.makeText(applicationContext, myFriends[i] + " deleted", Toast.LENGTH_LONG).show()
+                        mondatadatbazis.sleepDatabaseDao.deletefile(myFile[i])
+                        Toast.makeText(applicationContext, myFile[i] + " deleted", Toast.LENGTH_LONG).show()
                         listafrissito()
                         /*
                          finish();

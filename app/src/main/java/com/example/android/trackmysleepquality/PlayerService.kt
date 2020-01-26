@@ -57,7 +57,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
     lateinit var audioManager: AudioManager
     var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
     override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
-        Toast.makeText(applicationContext, "volume changed", Toast.LENGTH_SHORT).show()
+      //  Toast.makeText(applicationContext, "volume changed", Toast.LENGTH_SHORT).show()
 
     }
 
@@ -107,6 +107,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
     var kozepsoduplakattelozoido = 0L
     fun valtofunction() {
+//todo mentse el az aktuális mondatállást az adatbázisba, hogy amikor később megnyitjuk, akkor onnan folytassa
         if (bongeszoallapot) {
             mondatokszama=-1
             aktualismondatindex=0
@@ -129,13 +130,13 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
             bongeszoallapot = true
         }
-
+        sendState()
     }
 
     fun playpause() {
+
         var kozepsoduplakattjelenido = System.currentTimeMillis()
-        sendState();
-        if ((kozepsoduplakattjelenido - kozepsoduplakattelozoido) > 800) {
+        if ((kozepsoduplakattjelenido - kozepsoduplakattelozoido) > 750) {
             if (bongeszoallapot) {
                 myTts.stop()
                 myTts.speak((aktualisfejezetindex + 1).toString() + "of" + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
@@ -148,6 +149,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             valtofunction()
         }
         kozepsoduplakattelozoido = System.currentTimeMillis()
+        sendState()
     }
    fun aktualismondatindexellenorzo(): Int {
       if(aktualismondatindex<0){
@@ -167,6 +169,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
         }
     }
+    //todo duplaklikknél ugorjon 10-et
     fun next() {
 
         if (bongeszoallapot) {
@@ -184,7 +187,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             if (aktualismondatindex < mondatokszama) {
                 aktualismondatindex++
                 myTts.stop()
-               //todo java.lang.IndexOutOfBoundsException: Index: 7, Size: 5 összeomlott
+               //todo talán javítva java.lang.IndexOutOfBoundsException: Index: 7, Size: 5 összeomlott...
 
                 myTts.speak((aktualismondatindex + 1).toString() + "of" + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
 
@@ -194,10 +197,11 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             }
         }
 
-
+        sendState()
     }
 
     fun previous() {
+
         if (bongeszoallapot) {
             if (aktualisfejezetindex > 0) {
                 aktualisfejezetindex--
@@ -217,6 +221,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                 myTts.speak("First Sentence:" + (aktualismondatindex + 1).toString() + "of" + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
             }
         }
+        sendState()
     }
 
     private val mBinder = LocalBinder()
@@ -235,7 +240,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                     when (keycode) {
                         // Do what you want in here
                         KeyEvent.KEYCODE_MEDIA_PLAY -> {
-                            Toast.makeText(applicationContext, "play", Toast.LENGTH_SHORT).show()
+                           // Toast.makeText(applicationContext, "play", Toast.LENGTH_SHORT).show()
 
 
                             /*
@@ -254,18 +259,18 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                             playpause()
                         }
                         KeyEvent.KEYCODE_MEDIA_PAUSE -> {
-                            Toast.makeText(applicationContext, "pause", Toast.LENGTH_SHORT).show()
+                          //  Toast.makeText(applicationContext, "pause", Toast.LENGTH_SHORT).show()
                             playpause()
                         }
                         KeyEvent.KEYCODE_MEDIA_NEXT -> {
                             /***megcseréltem a nextet a previoussal*/
                             previous()
-                            Toast.makeText(applicationContext, "prev", Toast.LENGTH_SHORT).show()
+                          //  Toast.makeText(applicationContext, "prev", Toast.LENGTH_SHORT).show()
                         }
 
                         KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
                             next()
-                            Toast.makeText(applicationContext, "next", Toast.LENGTH_SHORT).show()
+                         //   Toast.makeText(applicationContext, "next", Toast.LENGTH_SHORT).show()
                         }
 
 
@@ -309,7 +314,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                     //pause the MediaPlayer
                     TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING -> {
 
-                        Toast.makeText(applicationContext, "1", Toast.LENGTH_SHORT).show()
+                       // Toast.makeText(applicationContext, "1", Toast.LENGTH_SHORT).show()
                         valtofunction()
                         requestAudioFocus()
                         // requestAudioFocus()
@@ -321,7 +326,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                         // requestAudioFocus()
                         // mMediaPlayer2.start()
                         //myTts.speak("bdfb gbdfgbdfgb dbgfbdfgbd dfgbdfgbd", TextToSpeech.QUEUE_FLUSH, null)
-                        Toast.makeText(applicationContext, "2", Toast.LENGTH_SHORT).show()
+                     //   Toast.makeText(applicationContext, "2", Toast.LENGTH_SHORT).show()
                         requestAudioFocus()
                     }
 
@@ -342,8 +347,11 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         // You can also include some extra data.
         intent.putExtra("aktualismondatindex", aktualismondatindex);
         intent.putExtra("aktualisfejezetindex", aktualisfejezetindex);
+        intent.putExtra("mondatokszama", mondatokszama);
+        intent.putExtra("fejezetekszama", fejezetekszama);
         intent.putExtra("bongeszoallapot", bongeszoallapot);
-
+        intent.putExtra("fajlcim", cim);
+        intent.putExtra("aktualisfejezet", fejezetek[aktualisfejezetindexellenorzo()])
 
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -366,7 +374,16 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                 next()
             }else if(eventtype=="previous"){
                 previous()
+            }else if(eventtype=="jumpfejezet"){
+                if(bongeszoallapot==true) {
+                    aktualisfejezetindex = value
+                    playpause()
+                }
+            }else if(eventtype=="activityrestarted"){
+                sendState()
             }
+
+
 
 
 
@@ -428,7 +445,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             // Ignore
             // MainActivity.showText("focusChange=" + focusChange);
         }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
-        Toast.makeText(applicationContext, "elindult", Toast.LENGTH_SHORT).show()
+       // Toast.makeText(applicationContext, "elindult", Toast.LENGTH_SHORT).show()
 
         mediaSession!!.isActive = true
     }
@@ -466,18 +483,18 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                         .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE).build())
             }
 
-            val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.ecalogo)
+            val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.hangszoro3)
             val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                     .setContentTitle("Text to Speech")
-                    .setSmallIcon(R.drawable.ic_launcher_sleep_tracker_foreground)
+                    .setSmallIcon(R.drawable.hangszoro3)
                     //.setContentText(input)
-                    .setColor(Color.RED)
+                    .setColor(Color.parseColor("#00C1F0"))
                     .setLargeIcon(largeIcon)
-                    .addAction(R.drawable.ic_sleep_0, "Dislike", null)
+                    .addAction(R.drawable.button, "Dislike", null)
                     .addAction(R.drawable.ic_sleep_0, "Previous", null)
                     .addAction(R.drawable.ic_sleep_0, "Pause", null)
                     .addAction(R.drawable.ic_sleep_0, "Next", null)
-                    .addAction(R.drawable.ic_sleep_1, "Like", null)
+                    .addAction(R.drawable.next3, "Next", null)
                     .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                             .setShowActionsInCompactView(2, 3, 4)
                     )
@@ -492,6 +509,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             mMediaPlayer = MediaPlayer.create(applicationContext, R.raw.silent_sound)
             mMediaPlayer.setOnCompletionListener { mMediaPlayer.release() }
             mMediaPlayer.start()
+            sendState()
         }
         return Service.START_NOT_STICKY
     }
@@ -502,8 +520,10 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
     override fun onDestroy() {
         super.onDestroy()
-        Toast.makeText(applicationContext, "vege", Toast.LENGTH_SHORT).show()
-        Toast.makeText(getBaseContext(), "onDestroy", Toast.LENGTH_LONG).show();
+        myTts.stop()
+        myTts.shutdown()
+      //  Toast.makeText(applicationContext, "vege", Toast.LENGTH_SHORT).show()
+      Toast.makeText(getBaseContext(), "onDestroy", Toast.LENGTH_LONG).show();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         //if (mChatHeadView != null) mWindowManager.removeView(mChatHeadView)
         // mediaSession!!.release()

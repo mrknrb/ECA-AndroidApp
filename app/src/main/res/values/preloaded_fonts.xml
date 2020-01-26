@@ -16,6 +16,7 @@
 
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/palanquin_dark</item>
         <item>@font/roboto</item>
     </array>
 </resources>
