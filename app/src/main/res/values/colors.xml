@@ -13,13 +13,17 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   #00C1F0 nagyon jó kis égkék szín
+
+   <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
   -->
 
 <resources>
 
-    <color name="colorPrimary">#246F85</color>
-    <color name="colorPrimaryDark">#001B1F</color>
-    <color name="colorAccent">#004150</color>
+    <color name="colorPrimary">#494949</color>
+    <color name="colorPrimaryDark">#181818</color>
+    <color name="colorAccent">#000000</color>
 
     <color name="green_color">#FFFFFF</color>
     <color name="white_text_color">#FFFFFF</color>

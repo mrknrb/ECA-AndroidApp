@@ -146,9 +146,9 @@ class ttsprogram : AppCompatActivity() {
                 if (fajlcim != "") {
 
                     ttstitle.setText(fajlcim)
-                    listafrissito(fajlcim)
-                }
+                    //listafrissito(fajlcim,aktualisfejezetindex)
 
+                }
             }
             if (bongeszoallapot) {
                 var ttstext2: EditText = findViewById(R.id.ttstext2)
@@ -159,7 +159,16 @@ class ttsprogram : AppCompatActivity() {
                 var fejezetmod: LinearLayout = findViewById(R.id.fejezetmod)
                 var fejezetlista: ListView = findViewById(R.id.fejezetlista)
                 fejezetlista.isVisible = true
-                //fejezetlista.getChildAt(aktualisfejezetindex).setBackgroundColor(Color.GRAY)
+/*
+ Thread( Runnable() {
+    fun run() {
+        //Do whatever
+
+    }
+}).start();
+*/
+
+                listafrissito(fajlcim,aktualisfejezetindex)
 
                 ttstext2.setText("")
 
@@ -229,7 +238,7 @@ class ttsprogram : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    fun listafrissito(message: String) {
+    fun listafrissito(message: String,kijeloltfejezet:Int) {
 
         var mainlayout: ConstraintLayout = findViewById(R.id.mainlayout)
         mainlayout.setBackgroundColor(Color.parseColor("#E9E9E9"))//ez nem #9e9e9e
@@ -250,13 +259,29 @@ class ttsprogram : AppCompatActivity() {
             }
         })
 
+//todo crashokat okoz
+        /**
+        Handler().postDelayed(
+                {
+                    fejezetek.forEachIndexed { j, k ->
+                        //fejezetek2.add((j + 1).toString() + ". " + fejezetek[j])
+                        var fejezet= fejezetlista.getChildAt(j)
+                        if(j==kijeloltfejezet){
+                            fejezet.setBackgroundColor(Color.YELLOW)
+                        }else{
+                            fejezet.setBackgroundColor(Color.TRANSPARENT)
+                        }
+                    }
+                    // This method will be executed once the timer is over
+                },
+                1000 // value in milliseconds
+        )
+        */
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         //tts playertől fogadáshoz kell
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 IntentFilter("tts_state"));
-
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ttsprogram)
@@ -289,12 +314,12 @@ class ttsprogram : AppCompatActivity() {
 
             speakclick.setBackgroundColor(Color.parseColor("#d32f2f"))
             ttstitle.setText(message)
-            listafrissito(message)
+            listafrissito(message,0)
 
             mainlayout.setBackgroundColor(Color.parseColor("#9e9e9e"))
         } else if (fajlcim != "") {
             ttstitle.setText(fajlcim)
-            listafrissito(message)
+            listafrissito(message,0)
 
             mainlayout.setBackgroundColor(Color.parseColor("#9e9e9e"))
 
@@ -314,6 +339,8 @@ class ttsprogram : AppCompatActivity() {
 
             setupbuttonhatter.setBackgroundResource(R.drawable.gombzold)
             loadbuttonhatter.setBackgroundResource(R.drawable.gombpiros)
+            
+
 
         }
         val loadbutton: Button = findViewById(R.id.loadbutton)
