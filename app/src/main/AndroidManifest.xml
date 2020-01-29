@@ -2,11 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.android.trackmysleepquality">
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -16,27 +20,30 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <receiver android:name="MyPhoneReceiver" >
+        <activity android:name=".TTSSetup">
+
+        </activity>
+
+        <receiver android:name=".MyPhoneReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" >
-                </action>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-        <activity android:name=".MainActivity"
-            android:label="RS Pen Controller" >
+
+        <activity
+            android:name=".MainActivity"
+            android:label="RS Pen Controller">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DialerActivity"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
-            >
-
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize">
             <intent-filter>
+
                 <!-- Handle links from other applications -->
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.DIAL" />
@@ -44,29 +51,29 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- Handle links in browsers -->
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="tel" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <service
             android:name=".CallService"
-            android:permission="android.permission.BIND_INCALL_SERVICE"
-            >
+            android:permission="android.permission.BIND_INCALL_SERVICE">
             <meta-data
                 android:name="android.telecom.IN_CALL_SERVICE_UI"
-                android:value="true"
-                />
+                android:value="true" />
+
             <intent-filter>
                 <action android:name="android.telecom.InCallService" />
             </intent-filter>
         </service>
 
         <activity android:name=".CallActivity" />
-
         <activity
             android:name=".ttsprogram"
             android:label="Text to Speech" />
@@ -89,8 +96,6 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibilityservice" />
         </service>
-
-
         <service
             android:name=".PlayerService"
             android:enabled="true"
@@ -99,12 +104,19 @@
             android:name=".ChatHeadService"
             android:enabled="true"
             android:exported="true" />
-        <service android:name=".MyInputMethodService" android:label="MyInputMethodService" android:permission="android.permission.BIND_INPUT_METHOD">
-            <meta-data android:name="android.view.im" android:resource="@xml/method"/>
+        <service
+            android:name=".MyInputMethodService"
+            android:label="MyInputMethodService"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method" />
+
             <intent-filter>
-                <action android:name="android.view.InputMethod"/>
+                <action android:name="android.view.InputMethod" />
             </intent-filter>
         </service>
+
         <receiver
             android:name=".RemoteReceiver"
             android:enabled="true"
@@ -113,6 +125,7 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

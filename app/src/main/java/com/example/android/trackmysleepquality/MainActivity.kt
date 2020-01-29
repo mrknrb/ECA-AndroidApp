@@ -60,8 +60,7 @@ import android.text.SpannableString
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import android.widget.LinearLayout
 
 
 class MainActivity : AppCompatActivity() {
@@ -82,17 +81,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        findViewById<LinearLayout>(R.id.navigationapp).setOnClickListener(View.OnClickListener {
 
+        })
 
-        findViewById<TextView>(R.id.callingmethod).setOnClickListener(View.OnClickListener {
+        findViewById<LinearLayout>(R.id.callingapp).setOnClickListener(View.OnClickListener {
             val intent = Intent(this, DialerActivity::class.java)
             startActivity(intent)
         })
 
 
-        findViewById<TextView>(R.id.textView6).setOnClickListener(View.OnClickListener {
 
-        })
 
 
 

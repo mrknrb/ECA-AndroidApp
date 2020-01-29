@@ -27,6 +27,7 @@ import com.example.android.trackmysleepquality.database.Mondat
 
 
 class ttsbetoltes : AppCompatActivity() {
+   var setupallapot=0
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -58,9 +59,14 @@ class ttsbetoltes : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ttsbetoltes)
+
+
+        setupallapot = intent.getIntExtra("setupallapot", 0)
+
+
         var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this@ttsbetoltes)
         val friendsListView = findViewById<ListView>(R.id.listview)
-        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
         val ttstext = findViewById<EditText>(R.id.ttstext)
         val ttstitle = findViewById<EditText>(R.id.ttstitle)
         val savebutton = findViewById<Button>(R.id.savebutton)
@@ -179,7 +185,9 @@ class ttsbetoltes : AppCompatActivity() {
 
             fun load(cim: String) {
                 val intent = Intent(this@ttsbetoltes, ttsprogram::class.java)
-                intent.putExtra(EXTRA_MESSAGE, cim)
+                intent.putExtra("tipus", "load");
+                intent.putExtra("cim", cim)
+                intent.putExtra("setupallapot", setupallapot)
                 intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP)
                 //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 //intent.setClassName(this@ttsbetoltes,"com.example");
@@ -222,5 +230,13 @@ class ttsbetoltes : AppCompatActivity() {
 
 
         listafrissito()
+
+       var newfile=findViewById<Button>(R.id.newfile)
+        newfile.setOnClickListener{
+                      ttstext.setText("")
+            ttstitle.setText("")
+        }
+
+
     }
 }

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TTSSetup">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout123"
+                android:layout_width="match_parent"
+                android:layout_height="119dp"
+                android:background="@drawable/gombszurke"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="1. Turn Off Bluetooth\n2. Make the Phone Silent\n3. Turn On Bluetooth"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/bluetoothbutton"
+                    android:layout_width="150dp"
+                    android:layout_height="80dp"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="Auto" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout455"
+                android:layout_width="match_parent"
+                android:layout_height="153dp"
+                android:background="@drawable/gombszurke"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="4. Turn on your pen and connect to the device \n5. Turn off calling function in Bluetooth device settings"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/bluetoothsettingspen"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/palanquin_dark"
+                        android:text="Set manually" />
+
+                    <Button
+                        android:id="@+id/done45"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Done!" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout6"
+                android:layout_width="match_parent"
+                android:layout_height="103dp"
+                android:background="@drawable/gombszurke"
+                android:gravity="right|center_vertical"
+                android:hapticFeedbackEnabled="false"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="6. Set Bluetooth Volume to Max"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/bluetoothvolumemax"
+                    android:layout_width="150dp"
+                    android:layout_height="80dp"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="Auto" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout7"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/gombszurke"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/textView55"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="7. Set the language of your TTS Engine (OPTIONAL)"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/ttssettings"
+                    android:layout_width="150dp"
+                    android:layout_height="80dp"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="Set Manually" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout8"
+                android:layout_width="match_parent"
+                android:layout_height="95dp"
+                android:background="@drawable/gombszurke"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="8. Turn Volume Booster on (RECOMMENDED)"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/volumebooster"
+                    android:layout_width="150dp"
+                    android:layout_height="80dp"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="Manual" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutback"
+                android:layout_width="match_parent"
+                android:layout_height="106dp"
+                android:background="@drawable/gombszurke"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="You are Done!"
+                    android:textSize="30sp" />
+
+                <Button
+                    android:id="@+id/backbutton"
+                    android:layout_width="150dp"
+                    android:layout_height="80dp"
+                    android:fontFamily="@font/palanquin_dark"
+                    android:text="Go Back!" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

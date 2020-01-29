@@ -30,10 +30,12 @@
             android:textSize="36sp" />
 
         <LinearLayout
+            android:id="@+id/ttsapp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#42A5F5"
             android:gravity="center|center_vertical"
+            android:onClick="ttsopen"
             android:orientation="horizontal"
             android:paddingBottom="10dp">
 
@@ -41,6 +43,7 @@
                 android:id="@+id/imageView"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:layout_marginRight="5dp"
                 app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
 
             <TextView
@@ -49,13 +52,14 @@
                 android:layout_height="100dp"
                 android:fontFamily="@font/palanquin_dark"
                 android:gravity="center"
-                android:onClick="ttsopen"
                 android:text="Text to Speech"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="30sp" />
+
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/navigationapp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#66BB6A"
@@ -67,6 +71,7 @@
                 android:id="@+id/imageView2"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:layout_marginRight="13dp"
                 app:srcCompat="@drawable/kurzor" />
 
             <TextView
@@ -78,9 +83,11 @@
                 android:text="Navigation"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="30sp" />
+
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/callingapp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#E7C754"
@@ -91,6 +98,7 @@
                 android:id="@+id/imageView3"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_marginRight="5dp"
                 app:srcCompat="@android:drawable/stat_sys_speakerphone" />
 
             <TextView
@@ -102,6 +110,7 @@
                 android:text="Calling"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="30sp" />
+
         </LinearLayout>
 
     </LinearLayout>
