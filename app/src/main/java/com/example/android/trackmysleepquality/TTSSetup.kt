@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import java.util.*
 import kotlin.concurrent.schedule
 import android.net.Uri
-import android.provider.AlarmClock
 import android.widget.Toast
 
 class TTSSetup : AppCompatActivity() {
@@ -76,9 +75,9 @@ class TTSSetup : AppCompatActivity() {
                 layout455.setBackgroundResource(R.drawable.gombzold)
                 layout6.setBackgroundResource(R.drawable.gombzold)
                 layout7.setBackgroundResource(R.drawable.gombzold)
+                layout8.setBackgroundResource(R.drawable.gombzold)
                 layoutback.setBackgroundResource(R.drawable.gombzold)
 
-                layout8.setBackgroundResource(R.drawable.gombzold)
             }
         }
         setupallapotszinezo()

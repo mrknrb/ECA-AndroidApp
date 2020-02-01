@@ -36,6 +36,7 @@ import java.util.Timer
 import kotlin.concurrent.schedule
 
 class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityService.SoftKeyboardController.OnShowModeChangedListener {
+
     var size = Point()
     private var mWindowManager: WindowManager? = null
     private var mChatHeadView: View? = null
@@ -61,7 +62,6 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
             mainHandler.postDelayed(this, 10000)
         }
     }
-
     private fun requestAudioFocus(): Boolean {
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val result = audioManager.requestAudioFocus(AudioManager.OnAudioFocusChangeListener { }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
@@ -76,7 +76,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
 
     fun updatecursor(params: WindowManager.LayoutParams) {
 
-        /**todo bug app:id/chat_head_root} not attached to window manager*/
+        /**todo bug app:id/chat_head_root} not attached to window manager még mindig előjön, nem tudom, hogy mi lehet a megoldás*/
         if (attachedchatheadview) {
             mWindowManager!!.updateViewLayout(mChatHeadView, params)
         }
@@ -484,6 +484,7 @@ class ChatHeadAccessibilityService1 : AccessibilityService(), AccessibilityServi
         mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         mWindowManager!!.addView(mChatHeadView, params)
         //mWindowManager!!.addView(mKeyBoardView, paramskeyboard)
+
         attachedchatheadview = true
         var defaultdisplay = mWindowManager!!.defaultDisplay.getSize(size)
 

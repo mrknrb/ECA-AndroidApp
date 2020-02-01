@@ -60,6 +60,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
     internal var cim: String = ""
     lateinit var audioManager: AudioManager
     var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
+   var setupallapot=0
     override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
       //  Toast.makeText(applicationContext, "volume changed", Toast.LENGTH_SHORT).show()
 
@@ -358,6 +359,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
         intent.putExtra("bongeszoallapot", bongeszoallapot);
         intent.putExtra("fajlcim", cim);
         intent.putExtra("aktualisfejezet", fejezetek[aktualisfejezetindexellenorzo()])
+        intent.putExtra("setupallapot", setupallapot)
 
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -459,7 +461,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
-
+        setupallapot=intent.getIntExtra("setupallapot",0)
         // Toast.makeText(applicationContext, intent.getStringExtra("cim"), Toast.LENGTH_SHORT).show()
 
         //List<Mondat> mondatok=mondatadatbazis.getSleepDatabaseDao().getAllMondatObjectFileAlapjan(cim);

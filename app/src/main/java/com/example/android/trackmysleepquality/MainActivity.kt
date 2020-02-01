@@ -65,7 +65,15 @@ import android.widget.LinearLayout
 
 class MainActivity : AppCompatActivity() {
 
-
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
 
 
    /*
@@ -81,7 +89,30 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if( isMyServiceRunning(PlayerService::class.java)) {
+            val intent = Intent(this, ttsprogram::class.java)
+            // val editText = findViewById(R.id.editText) as EditText
+            //  val message = editText.text.toString()
+            //  intent.putExtra(EXTRA_MESSAGE, message)
+            finish();
+            startActivity(intent)
+        }else if(isMyServiceRunning(ChatHeadAccessibilityService1::class.java)){
+            val intent = Intent(this, navigationsetup::class.java)
+            // val editText = findViewById(R.id.editText) as EditText
+            //  val message = editText.text.toString()
+            //  intent.putExtra(EXTRA_MESSAGE, message)
+            finish();
+            startActivity(intent)
+
+
+        }
+
         findViewById<LinearLayout>(R.id.navigationapp).setOnClickListener(View.OnClickListener {
+
+            val intent = Intent(this, navigationsetup::class.java)
+            startActivity(intent)
+
+
 
         })
 

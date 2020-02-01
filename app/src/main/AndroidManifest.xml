@@ -8,8 +8,8 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:name=".App"
@@ -20,9 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".TTSSetup">
-
-        </activity>
+        <activity android:name=".navigationsetup"></activity>
+        <activity android:name=".TTSSetup"></activity>
 
         <receiver android:name=".MyPhoneReceiver">
             <intent-filter>
@@ -106,7 +105,7 @@
             android:exported="true" />
         <service
             android:name=".MyInputMethodService"
-            android:label="MyInputMethodService"
+            android:label="RS Pen Controller Keyboard"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <meta-data
                 android:name="android.view.im"

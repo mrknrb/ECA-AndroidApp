@@ -109,16 +109,14 @@ class ttsprogram : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-
         super.onDestroy()
     }
-
     //tts playertől fogadás
     private val mMessageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            setuploadlayout.isVisible=false
             loadbuttonhatter.setBackgroundResource(R.drawable.gombzold)
             setupbuttonhatter.setBackgroundResource(R.drawable.gombzold)
             // Get extra data included in the Intent
@@ -128,6 +126,8 @@ class ttsprogram : AppCompatActivity() {
             val fejezetekszama = intent.getIntExtra("fejezetekszama", 0)
             val mondatokszama = intent.getIntExtra("mondatokszama", 0)
             val cim = intent.getStringExtra("fajlcim")
+
+          setupallapot = intent.getIntExtra("setupallapot",0)
             val aktualisfejezet = intent.getStringExtra("aktualisfejezet")
             var aktualisfejezetkiiras: TextView = findViewById(R.id.aktualisfejezetkiiras)
             aktualisfejezetkiiras.text = (aktualisfejezetindex + 1).toString()
@@ -376,6 +376,7 @@ class ttsprogram : AppCompatActivity() {
                 // serviceIntent.putExtra("inputExtra", input)
                 serviceIntent.putExtra("cim", ttstitle.text.toString())
                 serviceIntent.putExtra("speed", ttstitle.text.toString())
+                serviceIntent.putExtra("setupallapot", setupallapot)
                 ContextCompat.startForegroundService(this, serviceIntent)
                 speakclick.setBackgroundColor(Color.TRANSPARENT)
 

@@ -205,8 +205,8 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
                     keyboardView.invalidateAllKeys();
                     break;
                 case Keyboard.KEYCODE_DONE:
-                    inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
-
+                   // inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                    inputConnection.performEditorAction(EditorInfo.IME_ACTION_GO);
                     break;
                 default:
                     char code = (char) primaryCode;
