@@ -104,11 +104,13 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
     private fun removeAudioFocus(): Boolean {
         return (AudioManager.AUDIOFOCUS_REQUEST_GRANTED === audioManager.abandonAudioFocus(this))
     }
-
+    class Mondat( var mondat: Int)
+    var mondatindexek = mutableMapOf<Int, Mondat>()
     var kozepsoduplakattelozoido = 0L
     fun valtofunction() {
-//todo mentse el az aktuális mondatállást az adatbázisba, hogy amikor később megnyitjuk, akkor onnan folytassa
+
         if (bongeszoallapot) {
+            mondatindexek[2] =  Mondat(24)
             mondatokszama = -1
             aktualismondatindex = 0
             mondatok = mondatadatbazis.sleepDatabaseDao.getAllMondatFileEsFejezetAlapjan(cim, fejezetek[aktualisfejezetindexellenorzo()])
@@ -117,6 +119,12 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
                 mondatokszama = mondatokszama + 1
             }
+
+            if(  mondatindexek[aktualisfejezetindex]?.mondat!=null ){
+                if(mondatokszama>= mondatindexek[aktualisfejezetindex]!!.mondat)
+                    aktualismondatindex = mondatindexek[aktualisfejezetindex]!!.mondat
+            }
+
             myTts.stop()
             // myTts.speak("Opening" + aktualisfejezetszoveg.toString() + "of" + fejezetszamaszoveg.toString() + fejezetek[aktualisfejezetindex], TextToSpeech.QUEUE_FLUSH, null)
             myTts.speak("Opening file", TextToSpeech.QUEUE_FLUSH, null)
@@ -171,15 +179,16 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
     fun fejezettts(szovegelotte:String){
         myTts.stop()
-        myTts.speak(szovegelotte+(aktualisfejezetindex + 1).toString() + "of" + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
+        myTts.speak(szovegelotte+(aktualisfejezetindex + 1).toString() + "," + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
 
     }
     fun mondattts(szovegelotte:String){
+
+        mondatindexek[aktualisfejezetindex] =  Mondat(aktualismondatindex)
         myTts.stop()
-        myTts.speak(szovegelotte+(aktualismondatindex + 1).toString() + "of" + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
+        myTts.speak(szovegelotte+(aktualismondatindex + 1).toString() + "," + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
 
     }
-    //todo duplaklikknél ugorjon 10-et
     var nextduplakattelozoido = 0L
     fun next() {
         var duplaklikk= System.currentTimeMillis() - nextduplakattelozoido < 350
@@ -189,14 +198,14 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                     aktualisfejezetindex++
                     fejezettts("")
                } else {
-                    fejezettts("Last Part")
+                    fejezettts("")
                  }
             } else {
                 if (aktualisfejezetindex+8 < fejezetekszama) {
                     aktualisfejezetindex=aktualisfejezetindex+9
                     fejezettts("") } else {
                     aktualisfejezetindex=fejezetekszama
-                    fejezettts("Last Part")
+                    fejezettts("")
                 }
 
             }
@@ -207,7 +216,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                 //todo talán javítva java.lang.IndexOutOfBoundsException: Index: 7, Size: 5 összeomlott...
                 mondattts("")
             } else {
-                mondattts("Last Sentence")
+                mondattts("")
             }
         }else{
                 if (aktualismondatindex+8 < mondatokszama) {
@@ -215,7 +224,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                     mondattts("")
                 } else {
                     aktualismondatindex=mondatokszama
-                    mondattts("Last Sentence")
+                    mondattts("")
                 }
 
             }
@@ -236,14 +245,14 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                     aktualisfejezetindex--
                     fejezettts("")
                 } else {
-                    fejezettts("First Part")
+                    fejezettts("")
                 }
             } else {
                 if (aktualisfejezetindex-8 >0) {
                     aktualisfejezetindex=aktualisfejezetindex-9
                     fejezettts("") } else {
                     aktualisfejezetindex=0
-                    fejezettts("First Part")
+                    fejezettts("")
                 }
 
             }
@@ -254,7 +263,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                     //todo talán javítva java.lang.IndexOutOfBoundsException: Index: 7, Size: 5 összeomlott...
                     mondattts("")
                 } else {
-                    mondattts("First Sentence")
+                    mondattts("")
                 }
             }else{
                 if (aktualismondatindex-8>0) {
@@ -262,7 +271,7 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
                     mondattts("")
                 } else {
                     aktualismondatindex=0
-                    mondattts("First Sentence")
+                    mondattts("")
                 }
 
             }

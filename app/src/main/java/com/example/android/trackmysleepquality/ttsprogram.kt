@@ -393,31 +393,41 @@ class ttsprogram : AppCompatActivity() {
 
 
         stopbutton.setOnClickListener {
-            mainlayout.setBackgroundColor(Color.parseColor("#9e9e9e"))
-            speakclick.setBackgroundColor(Color.parseColor("#d32f2f"))
-            var setuploadlayout:LinearLayout= findViewById(R.id.setuploadlayout)
-            setuploadlayout.isVisible=true
-            stopService(Intent(this, PlayerService::class.java))
-            var aktualisfejezetkiiras: TextView = findViewById(R.id.aktualisfejezetkiiras)
-            aktualisfejezetkiiras.text = "0"
-            var osszesfejezetkiiras: TextView = findViewById(R.id.osszesfejezetkiiras)
-            osszesfejezetkiiras.text = "0"
-            var aktualismondatkiiras: TextView = findViewById(R.id.aktualismondatkiiras)
-            var osszesmondatkiiras: TextView = findViewById(R.id.osszesmondatkiiras)
+            builder.setTitle("Are you sure?")
+            builder.setMessage("Your reading state will be lost!")
+            builder.setNegativeButton("No", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+            builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialogInterface, i ->
 
-            aktualismondatkiiras.text = "0"
-            osszesmondatkiiras.text = "0"
-            var fejezetkiiras: TextView = findViewById(R.id.fejezetkiiras)
-            fejezetkiiras.text = ""
-            var ttstext2: EditText = findViewById(R.id.ttstext2)
-            ttstext2.setBackgroundColor(Color.TRANSPARENT)
-            var mondatmod: LinearLayout = findViewById(R.id.mondatmod)
-            mondatmod.setBackgroundColor(Color.TRANSPARENT)
-            var fejezetmod: LinearLayout = findViewById(R.id.fejezetmod)
-            fejezetmod.setBackgroundColor(Color.TRANSPARENT)
-            var fejezetlista: ListView = findViewById(R.id.fejezetlista)
-            fejezetlista.setBackgroundColor(Color.TRANSPARENT)
-            ttstext2.setText("")
+                mainlayout.setBackgroundColor(Color.parseColor("#9e9e9e"))
+                speakclick.setBackgroundColor(Color.parseColor("#d32f2f"))
+                var setuploadlayout:LinearLayout= findViewById(R.id.setuploadlayout)
+                setuploadlayout.isVisible=true
+                stopService(Intent(this, PlayerService::class.java))
+                var aktualisfejezetkiiras: TextView = findViewById(R.id.aktualisfejezetkiiras)
+                aktualisfejezetkiiras.text = "0"
+                var osszesfejezetkiiras: TextView = findViewById(R.id.osszesfejezetkiiras)
+                osszesfejezetkiiras.text = "0"
+                var aktualismondatkiiras: TextView = findViewById(R.id.aktualismondatkiiras)
+                var osszesmondatkiiras: TextView = findViewById(R.id.osszesmondatkiiras)
+
+                aktualismondatkiiras.text = "0"
+                osszesmondatkiiras.text = "0"
+                var fejezetkiiras: TextView = findViewById(R.id.fejezetkiiras)
+                fejezetkiiras.text = ""
+                var ttstext2: EditText = findViewById(R.id.ttstext2)
+                ttstext2.setBackgroundColor(Color.TRANSPARENT)
+                var mondatmod: LinearLayout = findViewById(R.id.mondatmod)
+                mondatmod.setBackgroundColor(Color.TRANSPARENT)
+                var fejezetmod: LinearLayout = findViewById(R.id.fejezetmod)
+                fejezetmod.setBackgroundColor(Color.TRANSPARENT)
+                var fejezetlista: ListView = findViewById(R.id.fejezetlista)
+                fejezetlista.setBackgroundColor(Color.TRANSPARENT)
+                ttstext2.setText("")
+            })
+            builder.show()
+
+
+
         }
     }
 }
