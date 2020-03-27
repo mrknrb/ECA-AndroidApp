@@ -3,11 +3,12 @@
     android:keyWidth="10%p"
     android:horizontalGap="0px"
     android:verticalGap="0px"
-    android:keyHeight="60dp"
+
     android:keyTextColor="@color/colorAccent"
     android:keyBackground="@color/colorPrimaryDark"
+
     >
-    <Row>
+    <Row  android:keyHeight="60dp">
         <Key
             android:id="@+id/key0"
             android:codes="48"
@@ -53,7 +54,7 @@
             android:keyLabel="9" />
 
     </Row>
-    <Row>
+    <Row  android:keyHeight="60dp">
         <Key
             android:id="@+id/key10"
             android:codes="113"
@@ -98,7 +99,7 @@
             android:keyLabel="p" />
 
     </Row>
-    <Row>
+    <Row  android:keyHeight="60dp">
         <Key
             android:id="@+id/key20"
             android:codes="97"
@@ -140,9 +141,10 @@
             android:id="@+id/key29"
             android:codes="-5"
             android:keyEdgeFlags="right"
+            android:isRepeatable="true"
             android:keyLabel="⌫" />
     </Row>
-    <Row>
+    <Row  android:keyHeight="60dp">
         <Key
             android:id="@+id/key30"
             android:codes="122"
@@ -186,7 +188,7 @@
             android:keyEdgeFlags="right"
             android:keyLabel="!" />
     </Row>
-    <Row android:rowEdgeFlags="bottom">
+    <Row android:keyHeight="60dp" >
         <Key
             android:id="@+id/key40"
             android:codes="32"
@@ -200,5 +202,15 @@
             android:keyBackground="@color/colorPrimary"
             android:keyEdgeFlags="right"
             android:keyLabel="⏎" />
+    </Row>
+    <Row android:rowEdgeFlags="bottom"  android:keyHeight="250dp" >
+        <Key
+            android:id="@+id/key42"
+            android:keyWidth="100%p"
+            android:codes="-1"
+            android:keyBackground="@color/colorPrimary"
+            android:keyEdgeFlags="left"
+            android:keyLabel=""
+            />
     </Row>
 </Keyboard>

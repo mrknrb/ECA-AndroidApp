@@ -1,5 +1,6 @@
 package com.example.android.trackmysleepquality;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -121,8 +122,8 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
         keyboardView = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard_view, null);
         keyboard = new Keyboard(this, R.xml.keys_layout);
         keyboardView.setKeyboard(keyboard);
-        keyboardView.setOnKeyboardActionListener(this);
 
+        keyboardView.setOnKeyboardActionListener(this);
 
         Keyboard.Key key = keyboardView.getKeyboard().getKeys().get(25);
         key.width = key.width - 10;
@@ -132,8 +133,7 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
         keyboardView.invalidateAllKeys();
         return keyboardView;
     }
-
-    @Override
+@Override
     public void onPress(int i) {
         //keyboardView.findViewById(R.id.key0);
         //System.out.println("mrk"+keyboardView.getKeyboard().getKeys().get(7));
@@ -200,9 +200,10 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
                     }
                     break;
                 case Keyboard.KEYCODE_SHIFT:
-                    caps = !caps;
-                    keyboard.setShifted(caps);
-                    keyboardView.invalidateAllKeys();
+
+                   // caps = !caps;
+                  //  keyboard.setShifted(caps);
+                  //  keyboardView.invalidateAllKeys();
                     break;
                 case Keyboard.KEYCODE_DONE:
                    // inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
@@ -222,10 +223,10 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-
-        kijelolesfrissito(Keygen(primaryCode));
-        karakterberako(primaryCode);
-
+if(primaryCode!=-1) {
+    kijelolesfrissito(Keygen(primaryCode));
+    karakterberako(primaryCode);
+}
     }
 
 

@@ -113,6 +113,11 @@ class navigationsetup : AppCompatActivity() {
                 layout3.setBackgroundResource(R.drawable.gombszurke)
                 setup3=false
             }
+            /**ha mindkettő igaz, akkor valszeg ez is igaz, amikor visszalép, így szebb*/
+            if(setup3&&setup2){
+                layout1.setBackgroundResource(R.drawable.gombzold)
+                setup1=true
+            }
 
             setupallapotszinezo(layout1,layout2,layout3,layoutback)
             mainHandler.postDelayed(this, 1000)
@@ -286,10 +291,12 @@ setup3=true
         backbutton.setOnClickListener {
             // Toast.makeText(this, isThisKeyboardSelected(this).toString(), Toast.LENGTH_SHORT).show()
             // Toast.makeText(this,.toString(), Toast.LENGTH_SHORT).show()
+
         }
 
         mainHandler = Handler(Looper.getMainLooper())
         mainHandler.post(updateTextTask)
+
     }
 
     override fun onBackPressed() {

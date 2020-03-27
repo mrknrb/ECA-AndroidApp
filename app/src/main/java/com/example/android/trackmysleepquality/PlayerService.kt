@@ -179,14 +179,14 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
 
     fun fejezettts(szovegelotte:String){
         myTts.stop()
-        myTts.speak(szovegelotte+(aktualisfejezetindex + 1).toString() + "," + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
+        myTts.speak(szovegelotte+(aktualisfejezetindex + 1).toString() + ",," + (fejezetekszama + 1).toString().plus(",") + fejezetek[aktualisfejezetindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
 
     }
     fun mondattts(szovegelotte:String){
 
         mondatindexek[aktualisfejezetindex] =  Mondat(aktualismondatindex)
         myTts.stop()
-        myTts.speak(szovegelotte+(aktualismondatindex + 1).toString() + "," + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
+        myTts.speak(szovegelotte+(aktualismondatindex + 1).toString() + ",," + (mondatokszama + 1).toString().plus(",") + mondatok[aktualismondatindexellenorzo()], TextToSpeech.QUEUE_FLUSH, null)
 
     }
     var nextduplakattelozoido = 0L
@@ -260,7 +260,6 @@ class PlayerService : Service(), OnAudioVolumeChangedListener, AudioManager.OnAu
             if (!duplaklikk) {
                 if (aktualismondatindex>0) {
                     aktualismondatindex--
-                    //todo talán javítva java.lang.IndexOutOfBoundsException: Index: 7, Size: 5 összeomlott...
                     mondattts("")
                 } else {
                     mondattts("")

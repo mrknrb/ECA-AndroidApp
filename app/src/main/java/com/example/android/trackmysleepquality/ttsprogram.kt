@@ -48,6 +48,7 @@ import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.R.attr.name
+import android.app.ActivityManager
 import android.opengl.Visibility
 import android.os.*
 import android.text.Spannable
@@ -109,14 +110,16 @@ class ttsprogram : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         super.onDestroy()
     }
+
     //tts playertől fogadás
     private val mMessageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            setuploadlayout.isVisible=false
+            setuploadlayout.isVisible = false
             loadbuttonhatter.setBackgroundResource(R.drawable.gombzold)
             setupbuttonhatter.setBackgroundResource(R.drawable.gombzold)
             // Get extra data included in the Intent
@@ -127,7 +130,7 @@ class ttsprogram : AppCompatActivity() {
             val mondatokszama = intent.getIntExtra("mondatokszama", 0)
             val cim = intent.getStringExtra("fajlcim")
 
-          setupallapot = intent.getIntExtra("setupallapot",0)
+            setupallapot = intent.getIntExtra("setupallapot", 0)
             val aktualisfejezet = intent.getStringExtra("aktualisfejezet")
             var aktualisfejezetkiiras: TextView = findViewById(R.id.aktualisfejezetkiiras)
             aktualisfejezetkiiras.text = (aktualisfejezetindex + 1).toString()
@@ -148,7 +151,7 @@ class ttsprogram : AppCompatActivity() {
                 fajlcim = cim
                 if (fajlcim != "") {
                     ttstitle.setText(fajlcim)
-                    listafrissito(fajlcim, aktualisfejezetindex)
+                    listafrissito(fajlcim, aktualisfejezetindex, true)
                 }
             }
             if (bongeszoallapot) {
@@ -160,7 +163,7 @@ class ttsprogram : AppCompatActivity() {
                 var fejezetmod: LinearLayout = findViewById(R.id.fejezetmod)
                 var fejezetlista: ListView = findViewById(R.id.fejezetlista)
                 fejezetlista.isVisible = true
-                listafrissito(fajlcim, aktualisfejezetindex)
+                listafrissito(fajlcim, aktualisfejezetindex, true)
                 ttstext2.setText("")
             } else {
                 val szovegvisszaallitott = SpannableStringBuilder()
@@ -206,6 +209,7 @@ class ttsprogram : AppCompatActivity() {
             fajlcim = cim
         }
     }
+
     //tts playernek küldés
     fun sendPlayerActions(eventtype: String, value: Int) {
         //Log.d("sender", "Broadcasting message");
@@ -216,55 +220,46 @@ class ttsprogram : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    fun listafrissito(message: String, kijeloltfejezet: Int) {
-        var mainlayout: ConstraintLayout = findViewById(R.id.mainlayout)
-        mainlayout.setBackgroundColor(Color.parseColor("#E9E9E9"))//ez nem #9e9e9e
-        var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
-        var fejezetek = mondatadatbazis.sleepDatabaseDao.getAllFejezetFileAlapjan(message)
-        var fejezetek2 = ArrayList<String>()
-        fejezetek.forEachIndexed { j, k ->
-            fejezetek2.add((j + 1).toString() + ". " + fejezetek[j])
-        }
-        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fejezetek2)
-        fejezetlista.setAdapter(arrayAdapter)
-        fejezetlista.setOnItemClickListener(object : AdapterView.OnItemClickListener {
-            override fun onItemClick(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                sendPlayerActions("jumpfejezet", i)
-                //TODO: jelölje ki a fejezetet, ami éppen aktív
+    var elozofejezet = 0
+    fun listafrissito(message: String, kijeloltfejezet: Int, csakfrissites: Boolean) {
+        if (csakfrissites) {
+            //todo cseréld ki recyclerviewra, mert a listviewnál nem lehet index szerint get-elni
+            //fejezetlista.get(kijeloltfejezet)?.setBackgroundColor(Color.YELLOW)
+            //  fejezetlista?.getChildAt(elozofejezet)?.setBackgroundColor(Color.TRANSPARENT)
+            //  fejezetlista?.getChildAt(kijeloltfejezet)?.setBackgroundColor(Color.YELLOW)
+            //   elozofejezet=kijeloltfejezet
+        } else {
+            var mainlayout: ConstraintLayout = findViewById(R.id.mainlayout)
+            mainlayout.setBackgroundColor(Color.parseColor("#E9E9E9"))//ez nem #9e9e9e
+            var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
+            var fejezetek = mondatadatbazis.sleepDatabaseDao.getAllFejezetFileAlapjan(message)
+            var fejezetek2 = ArrayList<String>()
+            fejezetek.forEachIndexed { j, k ->
+                fejezetek2.add((j + 1).toString() + ". " + fejezetek[j])
             }
-        })
-//todo crashokat okoz(ki akarom jelölni az aktuális fejezetet a listában
-        /*
-        Handler().postDelayed(
-                {
-                    fejezetek.forEachIndexed { j, k ->
-                        //fejezetek2.add((j + 1).toString() + ". " + fejezetek[j])
-                        var fejezet= fejezetlista.getChildAt(j)
-                        if(j==kijeloltfejezet){
-                            fejezet.setBackgroundColor(Color.YELLOW)
-                        }else{
-                            fejezet.setBackgroundColor(Color.TRANSPARENT)
-                        }
-                    }
-                    // This method will be executed once the timer is over
-                },
-                1000 // value in milliseconds
-        )
-
-        */
+            val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fejezetek2)
+            var fejezetlista: ListView = findViewById(R.id.fejezetlista)
+            fejezetlista.setAdapter(arrayAdapter)
+            fejezetlista.setOnItemClickListener(object : AdapterView.OnItemClickListener {
+                override fun onItemClick(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+                    sendPlayerActions("jumpfejezet", i)
+                }
+            })
+            //  fejezetek[kijeloltfejezet]
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //tts playertől fogadáshoz kell
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,IntentFilter("tts_state"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, IntentFilter("tts_state"));
 
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_ttsprogram)
         var tipus = intent.getStringExtra("tipus")
         var mondatadatbazis: MondatDatabase = MondatDatabase.getInstance(this)
-       var ttstext2:EditText = findViewById(R.id.ttstext2)
-        ttstext2.isVisible=false
+        var ttstext2: EditText = findViewById(R.id.ttstext2)
+        ttstext2.isVisible = false
         var ttstitle: EditText = findViewById(R.id.ttstitle)
         var mSeekBarSpeed: SeekBar = findViewById(R.id.speedseekbar)
         var mSeekBarPitch: SeekBar = findViewById(R.id.pitchseekbar)
@@ -284,12 +279,15 @@ class ttsprogram : AppCompatActivity() {
             fajlcim = message
             speakclick.setBackgroundColor(Color.parseColor("#d32f2f"))
             ttstitle.setText(message)
-            listafrissito(message, 0)
+
+
+            listafrissito(message, 0, false)
+
 
             mainlayout.setBackgroundColor(Color.parseColor("#9e9e9e"))
         } else if (fajlcim != "") {
             ttstitle.setText(fajlcim)
-            listafrissito(message, 0)
+            listafrissito(message, 0, false)
             mainlayout.setBackgroundColor(Color.parseColor("#9e9e9e"))
             speakclick.setBackgroundColor(Color.parseColor("#d32f2f"))
             loadbuttonhatter.setBackgroundResource(R.drawable.gombzold)
@@ -379,9 +377,9 @@ class ttsprogram : AppCompatActivity() {
                 serviceIntent.putExtra("setupallapot", setupallapot)
                 ContextCompat.startForegroundService(this, serviceIntent)
                 speakclick.setBackgroundColor(Color.TRANSPARENT)
-
-               var setuploadlayout:LinearLayout= findViewById(R.id.setuploadlayout)
-                setuploadlayout.isVisible=false
+                var setuploadlayout: LinearLayout = findViewById(R.id.setuploadlayout)
+                setuploadlayout.isVisible = false
+                listafrissito(ttstitle.text.toString(), 0, false)
             }
         }
         nextbutton.setOnClickListener {
@@ -391,43 +389,49 @@ class ttsprogram : AppCompatActivity() {
             sendPlayerActions("previous", 0)
         }
 
-
+        fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+            val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.name == service.service.className) {
+                    return true
+                }
+            }
+            return false
+        }
         stopbutton.setOnClickListener {
-            builder.setTitle("Are you sure?")
-            builder.setMessage("Your reading state will be lost!")
-            builder.setNegativeButton("No", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
-            builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialogInterface, i ->
+            if (isMyServiceRunning(PlayerService::class.java)) {
+                builder.setTitle("Are you sure?")
+                builder.setMessage("Your reading state will be lost!")
+                builder.setNegativeButton("No", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.cancel() })
+                builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialogInterface, i ->
+                    mainlayout.setBackgroundColor(Color.parseColor("#9e9e9e"))
+                    speakclick.setBackgroundColor(Color.parseColor("#d32f2f"))
+                    var setuploadlayout: LinearLayout = findViewById(R.id.setuploadlayout)
+                    setuploadlayout.isVisible = true
+                    stopService(Intent(this, PlayerService::class.java))
+                    var aktualisfejezetkiiras: TextView = findViewById(R.id.aktualisfejezetkiiras)
+                    aktualisfejezetkiiras.text = "0"
+                    var osszesfejezetkiiras: TextView = findViewById(R.id.osszesfejezetkiiras)
+                    osszesfejezetkiiras.text = "0"
+                    var aktualismondatkiiras: TextView = findViewById(R.id.aktualismondatkiiras)
+                    var osszesmondatkiiras: TextView = findViewById(R.id.osszesmondatkiiras)
 
-                mainlayout.setBackgroundColor(Color.parseColor("#9e9e9e"))
-                speakclick.setBackgroundColor(Color.parseColor("#d32f2f"))
-                var setuploadlayout:LinearLayout= findViewById(R.id.setuploadlayout)
-                setuploadlayout.isVisible=true
-                stopService(Intent(this, PlayerService::class.java))
-                var aktualisfejezetkiiras: TextView = findViewById(R.id.aktualisfejezetkiiras)
-                aktualisfejezetkiiras.text = "0"
-                var osszesfejezetkiiras: TextView = findViewById(R.id.osszesfejezetkiiras)
-                osszesfejezetkiiras.text = "0"
-                var aktualismondatkiiras: TextView = findViewById(R.id.aktualismondatkiiras)
-                var osszesmondatkiiras: TextView = findViewById(R.id.osszesmondatkiiras)
-
-                aktualismondatkiiras.text = "0"
-                osszesmondatkiiras.text = "0"
-                var fejezetkiiras: TextView = findViewById(R.id.fejezetkiiras)
-                fejezetkiiras.text = ""
-                var ttstext2: EditText = findViewById(R.id.ttstext2)
-                ttstext2.setBackgroundColor(Color.TRANSPARENT)
-                var mondatmod: LinearLayout = findViewById(R.id.mondatmod)
-                mondatmod.setBackgroundColor(Color.TRANSPARENT)
-                var fejezetmod: LinearLayout = findViewById(R.id.fejezetmod)
-                fejezetmod.setBackgroundColor(Color.TRANSPARENT)
-                var fejezetlista: ListView = findViewById(R.id.fejezetlista)
-                fejezetlista.setBackgroundColor(Color.TRANSPARENT)
-                ttstext2.setText("")
-            })
-            builder.show()
-
-
-
+                    aktualismondatkiiras.text = "0"
+                    osszesmondatkiiras.text = "0"
+                    var fejezetkiiras: TextView = findViewById(R.id.fejezetkiiras)
+                    fejezetkiiras.text = ""
+                    var ttstext2: EditText = findViewById(R.id.ttstext2)
+                    ttstext2.setBackgroundColor(Color.TRANSPARENT)
+                    var mondatmod: LinearLayout = findViewById(R.id.mondatmod)
+                    mondatmod.setBackgroundColor(Color.TRANSPARENT)
+                    var fejezetmod: LinearLayout = findViewById(R.id.fejezetmod)
+                    fejezetmod.setBackgroundColor(Color.TRANSPARENT)
+                    var fejezetlista: ListView = findViewById(R.id.fejezetlista)
+                    fejezetlista.setBackgroundColor(Color.TRANSPARENT)
+                    ttstext2.setText("")
+                })
+                builder.show()
+            }
         }
     }
 }
